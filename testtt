@@ -1,0 +1,251 @@
+Based on the provided audio excerpts, here is a detailed English transcript of the conversation. I have translated all Hindi portions into English to ensure the entire transcript is in English, as requested.
+
+### **Detailed English Transcript**
+
+**Meeting Start & Workflow Status**
+**Speaker 2 (Manager):** Share the updates. Is it happening on the thing side, or is there any blocker? As far as I know, we haven't tried yet, right? But if there is any blocker, let me know. Okay. Speaker 1, any update from your side right now?
+
+**Speaker 1:** No, actually I am working on this registry and all, and we will be testing today. We have already discussed this, right? So, we will connect around 3:30 PM and test the entire workflow in Databricks. Also, Speaker 3 was saying that the BAU team should be the one to dump the data at our end. Right?
+
+**Speaker 1:** Yes. No, we have already tested the "file arrival trigger." We tested that whenever a new file arrives in our blob, our workflow gets triggered. Right? It will start. We have tested that. I placed a normal Excel file there and created a job, and it ran successfully. For today, we will implement the end-to-end workflow. Basically, Dhanraj and I will sit together. I only tested the starting part earlier; today we will sit and test the subsequent parts, like the model registry, together.
+
+**Remote Triggers & Client Connectivity**
+**Speaker 2:** Okay. Now tell me, if a file arrives at a remote blob, how can you test that?
+
+**Speaker 1:** By remote block, do you mean the one we have, or some other one? Because the file won't come to the one we have; we will get this file delivered to the curated container inside the Tender BI.
+
+**Speaker 1:** Actually, as I was saying, we discussed that if it comes there, we won't implement Unity Catalog (UC) there, right? Because that is their system. So, what we can do is use the event that exists there—the one Speaker 3 implemented previously. We can create an Event Grid in the storage account. Okay?
+
+**Speaker 1:** And whatever file arrives, we can trigger it basically through an Azure Function App. Okay? So, that is one method. The second method, which I also mentioned to Speaker 3, is that we might not need Azure Function Apps and such. Basically, they run their pipeline, correct? There must be a Copy Activity there that dumps data into their blob storage. Right? So, following the same structure... they can just add a Copy Activity to dump it into our storage as well. That way, we won't need to implement Function Apps.
+
+**Speaker 2:** Okay?
+
+**Speaker 1:** Yes. And as soon as they are done... it is the simplest way. We just implement a Copy Activity. We will provide them with a linked service which will be created with them, allowing them to access our storage account—meaning they can use it in their Copy Activity.
+
+**Speaker 1:** So, as per my last conversation with Speaker 3... okay, so he had connected with Speaker 4. No, I wasn't there, I guess I was implementing logs—whatever issue there was, I sorted it all out. No worries. So, what he is saying... Speaker 4 is saying that the data they have is Production (Prod) data. Okay? So they cannot push or copy the data from their blob to our blob. Okay? Because our blob is a lower environment function.
+
+**Speaker 2:** Okay. Can we connect their lower environment with ours? That was the ask. Okay? So, I haven't heard back from him yet. Take... like... have a talk with Speaker 4. Okay? See if you can take it forward.
+
+**Speaker 1:** Okay, sure. I understood what it is. Basically, yes, they won't dump it directly into ours; we have to read it.
+
+**Speaker 2:** Right. To test it, just create a connector for the Copy Activity in any lower environment—their lower environment—just to test that once the file arrives... blah blah...
+
+**Speaker 1:** Okay. I guess we won't be able to test file arrival there. For that, I guess a Function will be required because we are able to check in our environment only because our storage is managed by Unity Catalog, right? So we could check it. We will have to see... we would have to create an Event Grid there...
+
+**Speaker 2:** Okay, otherwise just talk to him once whenever you are free. Just with Speaker 4.
+
+**Speaker 1:** Speaker 3... yes, Speaker 3, ping him once. Yes, I will speak to Speaker 3 on a call.
+
+**Speaker 2:** Yes, take an update from him once, then you can take it forward. Okay.
+
+**Model Improvement & Logging**
+**Speaker 2:** Okay, right. So, do that in the meantime because once this is tested, then we can ask to replicate the same thing in Prod. Correct. Okay. That’s from the engineering side. Okay, Dhanraj and Speaker 1, regarding the improvement side. Okay, Model Improvement side... what are we doing? Did you get the latest file from Future? Anyone?
+
+**Speaker 1:** No, not for model improvement. The last file I got was for the AI server. Working on adding it to the server as per the last discussion.
+
+**Speaker 2:** How much of that is done?
+
+**Speaker 1:** So, I tested the logs part. Currently, for the logs, we are generating them and uploading them to blob storage on a daily basis. I have tested that. It automatically...
+
+**Speaker 2:** What is the frequency?
+
+**Speaker 1:** Daily. Meaning 24 hours.
+
+**Speaker 2:** Meaning once in a day it will...
+
+**Speaker 1:** Yes. Meaning, it is configurable; it is set in the environment. But we can change the frequency as per our requirement.
+
+**Speaker 2:** So where is it currently being registered/stored? Local storage?
+
+**Speaker 1:** No, meaning it keeps it on local storage, and then at the end, it will automatically upload it to blob storage. It is automatically creating the container. If it doesn't exist, it dumps it there. We will test it.
+
+**Speaker 2:** Okay. Instead of a frequency, can we do that at the end of every activity... every prediction? That also can be done, right?
+
+**Speaker 1:** Yes.
+
+**Speaker 2:** That will be better because if something breaks (crashes), then we can check it in the logs instantly. Okay? Uh, okay. You are also doing the AI Summary.
+
+**AI Summary & Explainability (SHAP/LIME)**
+**Speaker 2:** Hmm. Then regarding the summary... did you look at it? What do you call it... like the date which you are sending... the file they gave that day. With that... how are you? Will you verify it, or...
+
+**Speaker 1:** That... I don't have... no. Meaning I only have the file. I will generate it... I will add it to the server, but regarding the PRs (Pull Requests), I can show you that. Show one, share... this is the logic technique select. Overall, at a superficial level, this looks okay, but we won't get the answer until we test it.
+
+**Speaker 2:** Yes, yes. So test it.
+
+**Speaker 1:** Yes, so we have planned... we have planned that we will go and use a script where we are generating synthetic data in the same pattern as the original data source. So, once I generate it, I can test this one. Also, if it is giving the correct results... for that, the model... and then generating the model... SHAP/LIME modeling will be created. Who is working on that explainability part? Who is working?
+
+**Speaker 2:** So, Rucha was doing that. Is SHAP/LIME included in this?
+
+**Speaker 1:** Yes.
+
+**Speaker 2:** Their SHAP logic is in this same file?
+
+**Speaker 1:** Okay. And Speaker 1, you have provided the hosting endpoints, right? To Raj?
+
+**Speaker 1:** Hmm. Prediction pipeline. Actually, we will test exactly that right now.
+
+**Speaker 2:** Oh, you will do that. Okay. Integration. Right. Okay. After that, Speaker 1, you can work on this.
+
+**Speaker 1:** Okay, sure. Give me the script once; I will test it right now. Okay.
+
+**Speaker 2:** Share the data format in which you would need it with [Name]. Share the format, let him work.
+
+**Architecture: Databricks vs. VM & UI Integration**
+**Speaker 2:** Okay, sure. Once started, let me know. I will ask the CI... or if you want to do it, you can do it too. Everything is done.
+
+**Speaker:** Yes, yes.
+
+**Speaker 2:** The UI is the one [Name/Mith] made, right? Have you seen it?
+
+**Speaker:** Yes. We will put it on this... what do you call it?
+
+**Speaker 2:** That is final integration. But for now, to test something...
+
+**Speaker:** Can we make something like a shadow file from this... from the cloud? Then it will give... it will be like a full backend.
+
+**Speaker 2:** Who will give it?
+
+**Speaker:** Meaning if we put the cloud... sorry, on Cursor. On Cursor.
+
+**Speaker 2:** Yes, it will create something for us. Then we can test it.
+
+**Speaker 2:** There isn't anything like a fix/filter. He can use any editor of his choice.
+
+**Speaker 2:** Hmm. Okay. I guess I am good. Just one question. One minute. So, if I want to understand the flow... if I have understood it correctly: First, we will have the prediction done on the Databricks side—inference will happen there. Then we will store the inference results... meaning on Databricks itself, on a Delta Table. We will store it on the Delta Table in Databricks.
+
+**Speaker 2:** Yes. Then we will have a trigger where it will generate the summary using the... sorry... using the inference data and the final features that were generated. Using that, the summary will be created.
+
+**Speaker 1:** Summary will be created. Right.
+
+**Speaker 2:** Yes. So currently, what we will do is: once the data is done, prediction is done, it is saved in the Delta Table. Okay? Now we have to trigger this AI Summary. That also we will do in Databricks.-
+
+**Speaker 1:** Okay. Summary also in Databricks.
+
+**Speaker 2:** Databricks has that capability; it can do it. Hmm. It can do it. That is what I was discussing with the team yesterday... I mean Friday. So the data will remain there, and it will dump it to the blob. Right.
+
+**Speaker 2:** Now, what I will do... a VM will have these helper functions which will support the React App. So in the React App, after doing any filtering—by month and year—it will just fetch the data from the blob and show it on the dashboard. That is the plan for now. Okay. If heavy lifting is being done by Databricks, try to like... do the same thing in here. It is possible. If we need to, we can switch that to the VM.
+
+**Speaker 2:** Hmm. But if we filter on the UI... if we put the filter that we want a summary for, let's say, November 2025... then we have to again get its features, then create the summary, then send to GPT, then...-
+
+**Speaker 1:** That should be saved, right? Only the first... meaning as soon as it arrives, we will create the summary. Okay? For any given month. Hmm. We will fetch historical data too.
+
+**Speaker 2:** It will already be created.
+
+**Speaker 1:** It will be created. It's like kind of a static date... just show it. Don't do that during runtime. Because it’s the same data, right? Data is not changing. So there is no point in generating the same thing again and again.
+
+**Speaker 2:** And one more thing: The admin will have the option to change this. Yes, yes... he mentioned the edit option that day...-
+
+**Speaker 1:** Yes, they wrote that...
+
+**Speaker 2:** Okay. And the summary that we generate, this also we will store on the blob.
+
+**Speaker 1:** Keep it on the blob, or you can keep it in logs security... for now, I will keep it in the blob, no problem.
+
+**Speaker 2:** Okay, I am clear. Let you know.
+
+**Detailed Pipeline Logic**
+**Speaker 1:** The plan as of now... wait a minute. Yes, okay? So Training Data addition, everything will be on the ADLS (Azure Data Lake Storage). Okay? This is the data. In this, Model Training... okay... and the Trained Model—both will remain there. And the prediction pipeline will also go from there. Model data will come. That will get predicted by the trained model.
+
+**Speaker 1:** This data that remains, okay? So they have the connection from here to here. Okay, so this will also have the trained model. Yes, this one here... this is the one I am talking about. We can put this function inside Databricks as well.
+
+**Speaker 2:** Is it "Pets" (likely meant: Scripts/Paths) where it will have the option to run custom Python code?
+
+**Speaker 1:** I think currently in that notebook... we can put it in the notebook, no problem. So it was just part of that trained model because this is done... model was predicted. Responsible AI... sorry... External AI... that will not run and also do the summary. That thing will be stored in the database—Executive Summary and the forecasted data. This thing is under your storage and database part.
+
+**Speaker 1:** Now this React App dashboard will just fetch this thing and just show it to the user. Now, regarding this part... whether to keep it here or keep it there... that is not finalized. According to that, I will create my endpoints.-
+
+**Speaker 2:** If we are not generating it here, then we have to make sure that... what will be the problem if we do it here? Okay, if this thing is part of the trained model pipeline, okay? It will—as soon as the data arrives—generate the summary and put it in the blob. Okay? If it stays here, the forecasted data will be done, but our AI Summary won't happen.
+
+**Speaker 2:** For this, what will we do? We need to check with the user. What will the user do? On the first call for a given month, if he thinks he needs the Executive Summary for January 2026, then we will check if the Executive Summary is there in the DB or not. Hmm. If we use this forecasted data to generate this executive... sorry...-
+
+**Speaker 1:** Hmm. Correct. On the first call. After that, it will be done, but that will take some time. Also, if we do it on the VM... we will compute it on the server... so we will have to get the model, then get features, then...
+
+**Speaker 2:** No, model prediction will be done. This part, predicting the date, will be done. I am saying the raw... that this much cash will be there in this month. Those are the functions and the SHAP/LIME values. But the Executive Summary won't be made. For that, an LLM is needed. That's like, okay, yes. So execute... that's why I asked you.
+
+**Speaker 2:** Look, our Executive Summary bar will come, right? It will be like this. Okay? "You are something something something." Okay? That will be like something like this. Okay, photo it... date... this is nothing but this date. Shift equals... we have to pass SS. This data is already saved. We just have to generate this summary. If you can just call this inside Databricks, it will happen all at once as a part of this prediction. Correct. So either you design in such a way... like if you can put this code here or here. Whether you can put it in Databricks or in the VM.
+
+**Speaker 2:** Which one? This Executive Summary creation pipeline. Now at the end, what will be in our dashboard for the React App—based on that, we will... this API will fetch that data and show it. Okay, let me know. If you have any questions at any point in time, let me know. Hmm. We can discuss. Okay. Meaning based on our previous plan, I think SHAP and LIME, too, we were doing on the server VM, but I think it's better to do it on Databricks.
+
+**Speaker 1:** Yes, if it is possible, because look, we can do it on the server too, but there will be one problem there... regarding the hosting side... sorry, hosting... what do you call it? Trigger or some action.
+
+**Speaker 2:** Okay. If we get the trigger... If I create an endpoint... just like a GET endpoint which will be hit as soon as the inference is done... just one endpoint hit. Again. Fine. That's also fine.
+
+**Speaker 1:** Yeah. Can this... this is nothing but a user requesting for the summary.
+
+**Speaker 2:** So for analysis, SHAP/LIME... meaning here on the server... what we can do... we will just need to get the model and the required data, then...-
+
+**Speaker 2:** Plan... where are you going to do it? Tell me.
+
+**Speaker 1:** So we had planned... meaning this script that Rucha shared... the generation was happening in the script itself. So I was thinking of doing it on the VM, but now when I think of it, I think doing it on Databricks is better. I will do it in [Databricks]... all at once. Hmm.
+
+**Speaker 1:** So that way, along with inference, the analysis is also done at once. It will just remain stored. We just need to get that analysis and get the LLM call done. So for that, just a trigger... I will create it. After inference, when SHAP/LIME is created, it will instantly trigger an LLM call too. Okay. Store then.
+
+**Closing Implementation Details**
+**Speaker 2:** Right. Great. Exactly. Exactly. Absolutely correct. So, after it is done... meaning our end-to-end pipe will be complete. It's on the VM you have to just write the helper for the web. Yes.
+
+**Speaker 1:** That is simple then. Getting endpoints... hmm hmm.
+
+**Speaker 2:** Right, right. Yes, that will become a normal web [task].
+
+**Speaker 1:** That is done now. That endpoint is ready. I just have to create this Summary endpoint.
+
+**Speaker 2:** Great. Right. Yeah. It's... but at the same time... that it be flexible. If there is any change or something...
+
+**Speaker 1:** Yes. Yes. I think, yeah, we will have to give it. Okay. Everything is audible now. I think that... Great... Great thing. Okay.-
+
+**Speaker 2:** See... Hmm. And Speaker 1, on the logger part... we like to do it for every prediction. Like which user is doing this, which user has requested what run, for six months... keep that type of logger. Okay?
+
+**Speaker 1:** Okay. Okay. Sure.
+
+**Speaker 2:** That if something goes wrong, I should be able to track where it crashed (exploded), in which file it crashed, in which state it crashed, who used it...
+
+**Speaker 2:** Hmm. Okay. And the integration takes some time with the UI because they will do the SSO... on that, Dev... I have a question.
+
+**Environment Clarification (Lower vs. Prod)**
+**Speaker 1:** Regarding the "lower environment" you were talking about... are you talking about the GTRNA we have created on Azure, or are you talking about the Storage Account and Azure Database Workspace we will make in Prod?
+
+**Speaker 2:** Not Prod. Not Prod. Prod's server/lower environment will be... I am talking about all of them...
+
+**Speaker 1:** Oh, okay, okay. That Sandbox... that's...
+
+**Speaker 2:** Here... here... date... but asking like that... Yes, they won't send it here. But the one that will be created in Prod... can they send it there? Meaning, their SAS pipeline runs, right?
+
+**Speaker 1:** Yes. Yes.
+
+**Speaker 2:** That is exactly what I am saying to test. In Prod, I am clear that they will be sending that data and copying it into our blob storage. They will dump the file. Hmm. But we won't do it directly in Prod... in Prod, right? Before that, at least we have to demonstrate it once. So what I am saying is the curated data which they are showing... the file Mukesh dumped in blob storage. Okay? Hmm. Correct. From there also... correct. Yes, BI... correct. Taking data from there, we will put it in Product... that is a normal "from Prod over."-
+
+**Speaker 2:** For now, what we are doing... they have data and they are Prod. We have... our code is in Development. So Prod to Development connection cannot happen. It cannot happen. Right. So that's why I am saying to test... they must have a lower environment.
+
+**Speaker 1:** Oh, okay. Their lower environment. Correct. Correct. Okay.
+
+**Speaker 2:** There should be one, right? From there...
+
+**Speaker 1:** Probably any... like web... anyone is Non-Prod. Lower means Non-Prod. From their Non-Prod to our RNA (Lower Env).
+
+**Speaker 2:** Their Non-Prod to our Non-Prod. You test that connection—that if any file comes to their place... blah... whether we can trigger it or not.
+
+**Speaker 1:** Okay. I didn't understand. Basically... like from my side, triggering it there... that is not possible directly. For that, as I told you, Azure Function is needed.
+
+**Speaker 2:** But assume that there will be a log of theirs... Correct. They make a pipeline... put it in theirs, and simultaneously put it in ours too. I am not talking about Prod; I am talking about their Non-Prod.
+
+**Speaker 1:** So basically, I have to get it done through them... meaning the call...
+
+**Speaker 2:** Correct. Correct. Yes.
+
+**Speaker 1:** Right? That is what you are saying. Speaker 4 won't do it. Right. Right. Speaker 4 won't do it.
+
+**Speaker 2:** Okay. Okay. Okay. Speaker 3 is saying he has already done similar things in some product... product.
+
+**Speaker 1:** Okay. Okay. Okay. Sure.
+
+**Speaker 2:** Yes, so I am saying the same thing needs to be done in Non-Prod.
+
+**Speaker 1:** Okay. Okay. Sure. Because we don't have access to functions currently, so we can't test all this. So the normal thing is that they must have some Snaps (Synapse) pipeline... they will have a problem... at least dump it into ours through a Copy Activity... whatever data you have. I will give it to you. Right?
+
+**Speaker 2:** If they dump it at our place, we can have our trigger running on our blob storage.
+
+**Speaker 1:** Yes, yes. As soon as they dump it... in the future, for this month... my file arrival trigger will run the rest of the flow. Correct. Correct.
+
+**Speaker 2:** Okay. Okay. Check and let me know. Okay.
+
+**Speaker 1:** Okay. Okay ji. Let me know. If you have any further questions. Okay. Thanks everyone. Thanks. Thanks. Bye.
