@@ -1,0 +1,229 @@
+Excellent question — you already have **90% of the system built correctly**.
+What you’re missing is **exactly what Ankit was talking about: run-level audit + inference logging**.
+
+I’ll tell you **precisely what to change, where, and why** (no refactor, minimal edits).
+
+---
+
+# 🔴 What is currently MISSING (important)
+
+Right now your code logs:
+
+* model training steps
+* metrics
+* errors
+
+❌ But it does **NOT** log:
+
+* who ran inference
+* what inference was requested
+* run state
+* where it crashed
+* run_id for inference
+* persistence of inference logs (6 months)
+
+So Ankit’s request is **NOT satisfied yet**.
+
+---
+
+# ✅ What you need to ADD (high level)
+
+You need:
+
+1. **Inference run_id**
+2. **Structured logger (JSON)**
+3. **State logging**
+4. **User + request metadata**
+5. **Crash tracing**
+6. **Persistence (S3/DB/Blob)**
+
+---
+
+# ✅ EXACT FILES TO CHANGE
+
+| File                 | Why                            |
+| -------------------- | ------------------------------ |
+| `registry.py`        | Inference logging happens here |
+| (new) `inference.py` | Optional but recommended       |
+| `training.py`        | Only minor additions           |
+
+---
+
+# 1️⃣ CHANGE #1: Add structured audit logger (NEW FILE)
+
+Create a new file:
+
+### `audit_logger.py`
+
+```python
+import logging, json, uuid, datetime
+
+logging.basicConfig(level=logging.INFO)
+
+def get_run_id():
+    return str(uuid.uuid4())
+
+def log_event(run_id, state, user, payload=None, level="INFO"):
+    log = {
+        "timestamp": datetime.datetime.utcnow().isoformat(),
+        "run_id": run_id,
+        "state": state,
+        "user": user,
+        "payload": payload or {}
+    }
+    logging.log(getattr(logging, level), json.dumps(log))
+```
+
+This is **exactly what Ankit wants**.
+
+---
+
+# 2️⃣ CHANGE #2: Update `registry.py` (MOST IMPORTANT)
+
+### Add at top
+
+```python
+from audit_logger import get_run_id, log_event
+```
+
+---
+
+### Modify `load_model()` (log inference start)
+
+```python
+def load_model(version: str = None, user: str = "unknown"):
+    run_id = get_run_id()
+    log_event(run_id, "LOAD_MODEL_START", user, {"version": version})
+    
+    mlflow.set_registry_uri("databricks-uc")
+    ...
+    model = mlflow.sklearn.load_model(model_uri)
+
+    log_event(run_id, "LOAD_MODEL_SUCCESS", user, {"model_uri": model_uri})
+    return model, run_id
+```
+
+---
+
+### Modify `load_artifacts()` (log feature load)
+
+```python
+log_event(run_id, "LOAD_ARTIFACTS", user, {"run_id": run_id})
+```
+
+---
+
+# 3️⃣ CHANGE #3: Add inference logger (NEW FUNCTION)
+
+Add this in `registry.py` or new `inference.py`
+
+```python
+def run_inference(df, model, scaler, features, medians, user):
+    run_id = get_run_id()
+    
+    try:
+        log_event(run_id, "FEATURE_ENGINEERING_START", user)
+        X = df[features].fillna(medians)
+        
+        log_event(run_id, "SCALING", user)
+        X_scaled = scaler.transform(X)
+        
+        log_event(run_id, "PREDICTION", user)
+        preds = model.predict(X_scaled)
+        
+        log_event(run_id, "SUCCESS", user, {"rows": len(preds)})
+        return preds
+    
+    except Exception as e:
+        log_event(
+            run_id, "ERROR", user,
+            {"error": str(e), "file": __file__},
+            level="ERROR"
+        )
+        raise
+```
+
+---
+
+# 4️⃣ CHANGE #4: Add inference logging to notebooks
+
+```python
+model, run_id = load_model(user="govind")
+scaler = load_scaler(run_id)
+features, medians = load_artifacts(run_id)
+
+preds = run_inference(df, model, scaler, features, medians, user="govind")
+```
+
+---
+
+# 5️⃣ CHANGE #5: (Optional but GOOD) Add state logging in training
+
+Add inside `train()`:
+
+```python
+log_event(self.request_id, "TRAINING_START", "system")
+...
+log_event(self.request_id, "TRAINING_SUCCESS", "system")
+```
+
+---
+
+# 6️⃣ Where logs should be stored (VERY important)
+
+Right now logs go to stdout → lost.
+
+You must send them to:
+
+* Databricks table (best)
+* S3 / ADLS
+* ELK
+* CloudWatch
+
+Example:
+
+```python
+logging.FileHandler("/dbfs/logs/inference.log")
+```
+
+Retention = 6 months.
+
+---
+
+# 🧠 What to say to Ankit (perfect answer)
+
+> “I’ll add structured audit logging around inference runs: run_id, user, state, and failure trace. Logs will be persisted for six months for RCA and compliance.”
+
+This is **exactly what he wants to hear**.
+
+---
+
+# ⚠️ One more thing (VERY important)
+
+Your training features currently include **calendar flags and seasonality** (`quarter`, `is_q4`, etc.)
+This **violates the TXT guidelines you shared earlier**.
+
+⚠️ I strongly recommend removing them later
+(but that’s separate from logging)
+
+---
+
+# ✅ Summary: Minimal changes you need to make
+
+| File                  | Change                 |
+| --------------------- | ---------------------- |
+| `registry.py`         | add inference logging  |
+| `training.py`         | optional state logging |
+| new `audit_logger.py` | structured logger      |
+| notebook              | pass user + run_id     |
+
+---
+
+If you want, I can:
+
+* 🔧 Modify your code directly
+* 🧪 Add replay capability
+* 📦 Add MLflow inference logging
+* ☁️ Add Databricks table logging
+
+Just say **DO IT** and I’ll give you ready code.
