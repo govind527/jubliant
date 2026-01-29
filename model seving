@@ -1,0 +1,69 @@
+# Set the registry URI to Unity Catalog if not already set by default in the workspace
+mlflow.set_registry_uri("databricks-uc")
+
+# Define Model Name (Catalog.Schema.ModelName)
+# Replace 'main' and 'ml_schema' with your actual catalog and schema names
+model_name = "main.ml_schema.random_forest_classifier" 
+
+# Hyperparameters
+n_estimators = 100
+max_depth = 5
+
+with mlflow.start_run(run_name="random_forest_classifier_run") as run:
+    # Initialize and Train Model
+    rf = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth)
+    rf.fit(X_train, y_train)
+    
+    # Predict
+    y_pred = rf.predict(X_test)
+    
+    # Calculate Metrics
+    accuracy = accuracy_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred, average='weighted')
+    
+    # Log Parameters and Metrics
+    mlflow.log_param("n_estimators", n_estimators)
+    mlflow.log_param("max_depth", max_depth)
+    mlflow.log_metric("accuracy", accuracy)
+    mlflow.log_metric("f1_score", f1)
+    
+    # Log Model and Register to Unity Catalog
+    # The signature and input example are important for Model Serving
+    signature = mlflow.models.infer_signature(X_train, y_pred)
+    input_example = X_train.iloc[[0]]
+    
+    mlflow.sklearn.log_model(
+        sk_model=rf,
+        artifact_path="random_forest_model",
+        registered_model_name=model_name,
+        signature=signature,
+        input_example=input_example
+    )
+
+print(f"Model registered to: {model_name}")
+
+----------------------------------------------
+#Create Model Serving Endpoint
+w = WorkspaceClient()
+
+endpoint_name = "random_forest_classifier_endpoint_sdk"
+
+# Define the configuration for the endpoint
+endpoint_config = EndpointCoreConfigInput(
+    served_entities=[
+        ServedEntityInput(
+            entity_name=model_name,  # The model registered in Unity Catalog
+            entity_version=1,        # Use the latest version or specific version
+            workload_size="Small",   # Options: Small, Medium, Large
+            scale_to_zero_enabled=True
+        )
+    ]
+)
+
+# Create the endpoint
+w.serving_endpoints.create(
+    name=endpoint_name,
+    config=endpoint_config
+)
+
+print(f"Creating endpoint: {endpoint_name}. This may take a few minutes.")
