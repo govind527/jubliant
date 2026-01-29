@@ -1,0 +1,33 @@
+import mlflow
+import time, json, uuid
+from datetime import datetime
+
+def predict_with_mlflow_logging(model, df):
+    request_id = str(uuid.uuid4())
+    user = spark.sql("select current_user()").collect()[0][0]
+
+    with mlflow.start_run(run_name=f"inference_{request_id}", nested=True):
+        start = time.time()
+        preds = model.predict(df)
+        end = time.time()
+
+        # Log metadata
+        mlflow.set_tag("request_id", request_id)
+        mlflow.set_tag("requested_by", user)
+
+        # Log metrics
+        mlflow.log_metric("latency_ms", int((end - start) * 1000))
+        mlflow.log_metric("rows", len(df))
+
+        # Log payloads as artifacts
+        mlflow.log_text(df.to_json(), "input.json")
+        mlflow.log_text(json.dumps(preds.tolist()), "output.json")
+
+    return preds
+
+
+model = mlflow.sklearn.load_model(
+    "models:/finacopilot.ml_model.revenue_forecasting/1"
+)
+
+preds = predict_with_mlflow_logging(model, df)
