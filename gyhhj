@@ -47,3 +47,43 @@ preds = predict_with_mlflow_logging(model, df)
 [Speaker2]: What I was thinking, right... we... In blob... one table which is historicals, that will be one table. Okay. But there will be one folder in the blob where incremental data will always come. So we will basically put a Change Data Capture trigger on that.
 [Speaker1]: Oh, okay. Meaning that in a way... however anything changes in the data, then triggering that... yes... that new data has come.
 [Speaker2]: Right.
+
+
+
+Here is a detailed breakdown of what speaker is trying to convey, categorized by topic:
+
+### 1. Standardization of Code Structure
+Rucha is critical of the current method where all code (training, inference, logging) is crammed into a single Databricks notebook.
+*   **Modularization:** She insists that the team needs to move away from using a single, resource-intensive notebook that is "lagging",.
+*   **The `.py` Approach:** She instructs Govind to create separate Python (`.py`) scripts for functions and classes. These scripts should then be imported into a notebook to run the pipeline, rather than writing all code directly in the notebook cells,.
+*   **Folder Structure:** She agrees that they need to follow a standard folder structure (separating config, training, and artifacts), similar to previous projects, rather than the current ad-hoc setup,.
+
+### 2. The "Cut-Off Month" and Imputation Logic
+A major part of her explanation focuses on how the forecasting model handles future predictions.
+*   **Synthetic Rows:** She explains that for the model to predict revenue for the remainder of a year, the system must create "imputed" or "synthetic" rows for future months based on the data available up to a "cut-off month",.
+*   **The Workflow:**
+    1.  Raw data arrives and triggers the pipeline.
+    2.  The new data is transformed and appended.
+    3.  Based on this incremental data, the system creates imputed rows for the rest of the year (e.g., if data comes for June, rows are generated for July–December).
+    4.  The model then runs inference on these specific imputed rows.
+
+### 3. Data Integrity and Feature Engineering
+Rucha is correcting misconceptions regarding the data used for testing versus production.
+*   **Raw vs. Transformed Data:** She clarifies that the data arriving in the system is "Raw Data" (e.g., Committed Signed/Unsigned columns). This data needs to be "Transformed" (grouped and aggregated) before the model can use it. She notes that the current testing was done on data that was already transformed, which is different from the real-time scenario,.
+*   **Task Assignment:** She decides that she will write the **Feature Transformation Script** herself to bridge the gap between Steps 2 and 3 (Data Ingestion and Feature Creation),.
+
+### 4. Storage and Trigger Strategy
+Rucha proposes a specific architecture for how data should be stored and triggered in the production environment.
+*   **Four-Table Structure:** She suggests setting up four specific storage tables/locations to manage data history and updates:
+    1.  Raw Data (Historical)
+    2.  Raw Data (Incremental)
+    3.  Transformed Data (Historical)
+    4.  Transformed Data (Incremental).
+*   **Reasoning:** She argues that keeping historical raw data is essential for debugging ("if we need to check '23 data... refer back") and for future model retraining,.
+*   **Change Data Capture (CDC):** She proposes using a CDC trigger on the Blob storage. This means the pipeline will automatically start (trigger) whenever a new incremental data file lands in the specific folder.
+
+### 5. Specific Testing Targets for the Week
+Finally, Rucha defines the immediate goals for Govind to stabilize the model:
+*   **Training Data:** Train the model using data from 2023, 2024.
+*   **Testing Scenario:** Set the "cut-off month" to June 2025 and test the generation of synthetic rows and predictions for the rest of the year use june test data to predict and generate the remaining month using imputation logic,.
+*   **Pipeline Scope:** She clarifies that "Training/Retraining" is a periodic event (once every 6 months), whereas "Feature Creation" and "Inference" are monthly tasks. The pipeline currently needs to focus on the monthly inference flow,.
