@@ -31,3 +31,19 @@ model = mlflow.sklearn.load_model(
 )
 
 preds = predict_with_mlflow_logging(model, df)
+
+
+
+
+ For now, don't remove that much apart from those forecast columns. Don't remove, we will do that. Okay? Later maybe while fine-tuning we might need it. So for now let's do this, set up everything first. Yes, in a way... meaning... Everything, yes, yes, yes. Yes, yes. Make your script according to this data. Test everything. Then after this, the future processes... meaning one is to make folders. And one thing. This incremental data that will come... I showed you the '24 Excel file, it will come according to that. Correct. Hmm. So according to that also, have to set up a dummy file. According to that, have to set up an incremental dummy file. According to that, have to set up a historical dummy file. Plus look, there will be two categories here. One Raw Data, one Transformed Data. Okay? We will have to set up incremental plus historical for both these categories. Basically, there will be four tables.
+[Speaker1]: Hmm, okay.
+[Speaker2]: So we... I am telling you Raw Data Historical because... look, suppose we ever need to check '23 data, was there any issue... so that we can refer back and you know, we can make some changes. That is why I was thinking of Raw Data also, that we will... meaning last two years or three years we will store. You understand?
+[Speaker2 ]: Yes.
+[speaker 1]: Because our model will also retrain, right? So we need to store that '23, '24 and whatever historical data is there. That's what I was thinking.
+[Speaker2]: There is one more thing. Let me show one thing. Right now in between... meaning after training also we are storing data. By the way. Hmm. There is a catalog, but right now it is also dummy in a way. Consider it like that. Okay. Like here we come. Like what you are saying... meaning that same thing will be followed. Show me first. Okay? These four tables are set up. Like this is Test Feature, right? One is Train Feature. So what is happening is that Test Feature is ours in a way... that same one. Meaning '25 one. Sorry, Test Feature is '25 one. Train is ours '23 to... Full Data is ours in a way... all of it. In a way, I will show you. Just for... meaning testing purpose, we did it according to our thinking.
+[Speaker2]: Ah, you want to store it separate... Train and Test Feature data.
+[Speaker1]: Yes.
+[Speaker1]: But what you said is also actually correct because we... meaning how incremental...
+[Speaker2]: What I was thinking, right... we... In blob... one table which is historicals, that will be one table. Okay. But there will be one folder in the blob where incremental data will always come. So we will basically put a Change Data Capture trigger on that.
+[Speaker1]: Oh, okay. Meaning that in a way... however anything changes in the data, then triggering that... yes... that new data has come.
+[Speaker2]: Right.
