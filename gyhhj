@@ -87,3 +87,385 @@ Finally, Rucha defines the immediate goals for Govind to stabilize the model:
 *   **Training Data:** Train the model using data from 2023, 2024.
 *   **Testing Scenario:** Set the "cut-off month" to June 2025 and test the generation of synthetic rows and predictions for the rest of the year use june test data to predict and generate the remaining month using imputation logic,.
 *   **Pipeline Scope:** She clarifies that "Training/Retraining" is a periodic event (once every 6 months), whereas "Feature Creation" and "Inference" are monthly tasks. The pipeline currently needs to focus on the monthly inference flow,.
+
+
+
+---------------
+
+Here is the detailed English transcript for the file **"Thursday, 12_48 pm.m4a.mp4"**, using generic speaker labels as requested.
+
+**[Speaker 1]:** We have some issues actually, in the notebook as well. One is actually that we are storing everything at runtime, a lot of things, so yesterday I was getting an Out Of Memory issue as well. Because of this, the whole cell... meaning the whole kernel was restarting in a way.
+
+**[Speaker 2]:** Okay, meaning doing it in a single notebook...
+
+**[Speaker 1]:** Yes, a single notebook.
+
+**[Speaker 2]:** Why is it happening? Doing it in a single notebook...
+
+**[Speaker 1]:** Yes, right now that thing is sorted out, we have done it... meaning some things we are not printing right now or storing... meaning not storing there, so those things are sorted out now but... Speaker 3, share your screen once.
+
+**[Speaker 3]:** Otherwise I will do it, one minute.
+
+**[Speaker 1]:** Okay, our first thing is this. If we come here. Data is there. Okay. So when we are doing training. In training, suppose I have set feature selection to False here because right now we need all the features we have created.
+
+**[Speaker 2]:** Are you saying something?
+
+**[Speaker 1]:** Yes, yes, speak... voice cut...
+
+**[Speaker 2]:** It is still cutting. No, now it is coming.
+
+**[Speaker 1]:** Okay, okay. Speaker 2, can you hear me?
+
+**[Speaker 2]:** Yes, yes.
+
+**[Speaker 1]:** Yes, yes, like training is happening. Okay. After training, when we are doing predictions, right... like look here, it is scoring in a way. So...
+
+**[Speaker 2]:** I [have] one more thing...
+
+**[Speaker 1]:** Yes, yes.
+
+**[Speaker 2]:** Why is this training happening on the board [on the fly]? Because we [have] 2023-24... meaning you are saying that training... For your experimentation, right? The pickle file that you uploaded as a model... in the model catalog... We have to fetch that and do inference. We don't have to do training here.
+
+**[Speaker 1]:** Oh, okay.
+
+**[Speaker 2]:** You understand?
+
+**[Speaker 1]:** Hmm, hmm. No, that point of yours is correct... meaning in a way... use the one in-built model we hosted... or uploaded, use the one from local. Yes.
+
+**[Speaker 2]:** We don't have to train the model anymore. Model stay[s] fixed. We will make a separate script apart from this notebook or any other script... which, upon running, when data gets updated... like our 2025 data will also come into training... okay... once January is [over]... So we will have to do that thing. Okay? Don't keep the training script here in the same model... monthly pipeline.
+
+**[Speaker 1]:** Hmm, so should I remove this? Remove the whole script entirely?
+
+**[Speaker 2]:** Hello?
+
+**[Speaker 1]:** Hello.
+
+**[Speaker 2]:** Yes, remove it. Remove it. Yes. Meaning bring the Final Model. In the Final Model, put the one row that came after being transformed. A prediction will come. Then taking that prediction and date, again imputation will happen and it will keep going.
+
+**[Speaker 1]:** Okay. Okay. So we will have to use these same functions for imputation. So these functions... the imputation ones...
+
+**[Speaker 2]:** Yes, will have to use the imputation ones.
+
+**[Speaker 1]:** So we will have to call... meaning make all of these that are there. Won't have to do training. Yes.
+
+**[Speaker 2]:** No, won't have to do training. Look, the steps that are happening after training. Right? Take that and do this. Meaning basically after training, a model will be finalized, right?
+
+**[Speaker 1]:** Yes.
+
+**[Speaker 2]:** That finalized model... whatever steps are after that. Yes, yes, yes. Will have to change this a little. I see a lot of changes here.
+
+**[Speaker 1]:** Hmm, hmm. Okay. We will do this thing. I will do this. Second thing is here. Like some script kind of like this will come... like suppose... one minute... something like this will come... Yes like this... Vintage... Get Month... Month... Correct, correct. Predicted...
+
+**[Speaker 2]:** Have to keep Actual Revenue right... something...
+
+**[Speaker 1]:** In Actual, no value will come, right?
+
+**[Speaker 2]:** Actual Revenue...
+
+**[Speaker 1]:** Meaning...
+
+**[Speaker 2]:** And one more thing, tell [me]... Is it because of the data... why is Actual Revenue coming as same?
+
+**[Speaker 1]:** Actually I have put it here... you will see right now... in a way there won't be any Actual Revenue but we have... for now like this...
+
+**[Speaker 2]:** That won't be there.
+
+**[Speaker 1]:** Yes, so I actually added this just for [the] sake [of it], can remove it anyway. But mostly these three will remain: Vintage, Target Month, [and] the value of Predicted.
+
+**[Speaker 2]:** Okay, I... okay... What I want to confirm [is] that the Predicted Revenue that is coming, right... that Predicted Revenue should act as Actual Revenue for a... next... yes, yes, yes... right.
+
+**[Speaker 1]:** Yes, yes, I understood that... so...
+
+**[Speaker 2]:** The prediction that will be for January, will act as actual for the coming [month] and using that actual... what we will do... all basically the prediction[s] will be... That will be acting as the LM1 (Lag Month 1) for Feb...
+
+**[Speaker 1]:** Hmm.
+
+**[Speaker 2]:** Okay.
+
+**[Speaker 1]:** I am saying that like... Predicted Revenue came for Jan. Okay? And there will be its feature list. Correct.
+
+**[Speaker 2]:** Correct.
+
+**[Speaker 1]:** So this which is 26-02 (Feb 2026), for that it will work as Actual. Right?
+
+**[Speaker 2]:** It will work as January's Actual.
+
+**[Speaker 1]:** Yes.
+
+**[Speaker 2]:** Work [as] L1... yes.
+
+**[Speaker 1]:** Yes. And then its... which is 02... for that we will derive the feature list using the January features... January's prediction.
+
+**[Speaker 2]:** Prediction... yes, yes.
+
+**[Speaker 1]:** Okay, okay. Feature list arrived. Then again we will influence [inference], our revenue for 02 will come.
+
+**[Speaker 2]:** Correct.
+
+**[Speaker 1]:** One more thing I had to ask... can I upload whatever... meaning local model I have... job... saved... upload that and call it here? Right? Use it?
+
+**[Speaker 2]:** What features have you kept in that model?
+
+**[Speaker 1]:** Those same base features... base features... yes base features... right... which are ours... yes.
+
+**[Speaker 2]:** You can do that.
+
+**[Speaker 1]:** Okay. Not [a] problem.
+
+**[Speaker 2]:** Okay, fine.
+
+**[Speaker 1]:** Like this... in synthetic features won't know anything. Actually in synthetic data...
+
+**[Speaker 2]:** Yes that's the thing... I...
+
+**[Speaker 1]:** Are saying but you won't be...
+
+**[Speaker 2]:** That's the thing, won't know.
+
+**[Speaker 1]:** Okay, do it... do it... let's see. Okay. SHAP... from here we had... meaning mostly in a way... said that... had done all these but doing this thing once again...
+
+**[Speaker 2]:** This... Speaker 2... date... meaning looking like a DataFrame right now... Vintage Month, Target Month, Predicted Revenue, Feature List... and what... yes... basically this one row will go into the For Loop. And the function of SHAP and LIME... okay?
+
+**[Speaker 1]:** Hmm, hmm.
+
+**[Speaker 2]:** That... meaning First Row went... it... meaning whatever output SHAP and LIME gives... that will go as an AI Summary into the next function. Correct.
+
+**[Speaker 1]:** Correct.
+
+**[Speaker 2]:** Okay. And one thing...
+
+**[Speaker 1]:** And one thing regarding the model... and one thing I need to look into it. If you know then speak. So I extracted prediction for January. Extracted its SHAP and LIME. Then extracted for Feb. Will have to extract its SHAP and LIME as well? Or SHAP and LIME will be same across... No, no, it will be different for each prediction. Okay?
+
+**[Speaker 1]:** But... so this... Here my question arises. Here my question arises that you said we will extract SHAP and LIME for every month. But in SHAP and LIME we are providing matrices to them here. These matrices... whose matrix will this be? Then that matrix...
+
+**[Speaker 2]:** Matrix...
+
+**[Speaker 1]:** Because ours...
+
+**[Speaker 2]:** Can you show one output in LIME?
+
+**[Speaker 1]:** Let me share the output.
+
+**[Speaker 2]:** One minute, it closed again. Hello? Hello? Can you hear me? Speaker 3? Hello? Hello? Hello?
+
+**[Speaker 3]:** I am not able to hear anything.
+
+**[Speaker 1]:** Okay... have no idea but... I was understanding right... what does SHAP need? Needs the Model. Needs Feature Names. Okay? So this model... that we... meaning train and test... take data of 2 years and one year... our model is on that right?
+
+**[Speaker 2]:** Correct.
+
+**[Speaker 1]:** And Feature Names which are... yes 25 features... Might be wrong too... so then what we are sending for every Target Month... things... meaning for everyone then this will produce same things only right? Because we are just taking Model and Feature Names and passing nothing else right?
+
+**[Speaker 2]:** No, no, you go to Load Data Model, right... because...
+
+**[Speaker 1]:** Yes, going to Load Data Model.
+
+**[Speaker 2]:** Yes. Here... Speaker 2 look... like here to explain, we are taking Training Feature. Okay? That `X_explain` one and we are taking `X_test` as well. Meaning in a way. Okay? Then taking Training Target also and taking Test [Target] also... in a way. But when we do for SHAP... meaning for Future Month... so we will neither have Target nor any... to explain. Meaning in a way won't have anything. We will have data only for inference. Right?
+
+**[Speaker 2]:** But this is doing it right. What is this? Look Back right... some Months Look Back.
+
+**[Speaker 1]:** Yes, will Look Back... in a way... going back number of months to analyze it.
+
+**[Speaker 2]:** Meaning I... meaning I wasn't understanding actually. But for every row, will this SHAP and LIME output come different-different? For every Target Month?
+
+**[Speaker 1]:** One minute looking. Checking and confirming.
+
+**[Speaker 2]:** Correct.
+
+**[Speaker 1]:** Yes. It is not a Linear Model but for now like suppose taking Elastic Net or that... it is not Linear but...
+
+**[Speaker 2]:** It's Instance Specific. A SHAP [is] Instance Specific... meaning one SHAP result will come for one row.
+
+**[Speaker 1]:** Oh, so right now the `X_train` we put... in a way in `X_train` right now we put '23-'24... everyone's data. Right? And in Explain right now we put `X_test` data. Meaning in a way 2025. But in coming days whose data will we put? Meaning in a way for Future Month because it needs this anyway. Data so...
+
+**[Speaker 2]:** I didn't understand. Whose SHAP will we put... you are searching right?
+
+**[Speaker 1]:** Which row's...
+
+**[Speaker 2]:** Yes, which row's will we put... meaning what will we put in `X_train`... what will we put in `X`...
+
+**[Speaker 1]:** Will have to do such that...
+
+**[Speaker 2]:** Right now on what is our SHAP coming... on which A is it coming... is it coming on anything right now? So that is for... take any one last row... are you taking it like that or how is it coming?
+
+**[Speaker 1]:** Show the result once, man.
+
+**[Speaker 3]:** Result... one minute.
+
+**[Speaker 2]:** One minute...
+
+**[Speaker 3]:** LIME's show...
+
+**[Speaker 1]:** Hmm 9 202... 9 202... what is this?
+
+**[Speaker 3]:** Looked back some months I guess... Speaker 4 did like this...
+
+**[Speaker 1]:** No no no this is file name actually. You open the SHAP one... open the SHAP one... 2026 one...
+
+**[Speaker 3]:** Might come in [that]. This one.
+
+**[Speaker 1]:** Properly.
+
+**[Speaker 3]:** Do down... down.
+
+**[Speaker 2]:** From my experience this happens that for every prediction... for every instance... one-one SHAP LIME analysis comes. Okay.
+
+**[Speaker 1]:** Hmm, so right now which one are we putting? Hey Hi Speaker 4.
+
+**[Speaker 4]:** Continue. Just give me two minutes.
+
+**[Speaker 1]:** Okay, okay, okay. Data Stats is showing like this 36... three years... taking total records right... in this... the current month... whatever Current Target Month is coming... where is the discussion of that in this?
+
+**[Speaker 2]:** Or we have to explain... if the Inference Table is coming... have to put all their data. And the rows... meaning one... the one we have to do [explain]... have to put that. Meaning have to put specific [row]. Then it will do.
+
+**[Speaker 1]:** So requesting two-three things. `X_train`... `X_X` whatever... where will you bring that from? That is also there... and demanding Target Variable only. Target...
+
+**[Speaker 2]:** That Speaker 4 will be able to tell... any idea... will get clear. Hello?
+
+**[Speaker 4]:** Hello.
+
+**[Speaker 2]:** Speaker 4?
+
+**[Speaker 1]:** Speaker 4 we had a doubt... from what we know... that [in] SHAP and LIME analysis... from one prediction comes one SHAP and LIME analysis. Right? Similarly [if] we do next prediction. SHAP and LIME will come separate. Because what does SHAP and LIME give? Basically gives a range that this was the range of this feature hence this prediction came. Correct? So gives like that. So what you took for SHAP and LIME AI Summary. Is it a... for each prediction you are taking all the SHAP... LIME... how are you taking?
+
+**[Speaker 4]:** No... Only One... Let's... meaning For the Current Month... for which month you want the analysis. Only that month's it will take. So Let's say For Example if you are taking... if you want to generate summary for May 2025... Then it will fetch SHAP and LIME for 202... [current month?]... will use that then.
+
+**[Speaker 2]:** But why are we putting whole Hold Data in this? Meaning for now...
+
+**[Speaker 1]:** Like put 36 rows entirely right...
+
+**[Speaker 4]:** To that SHAP and LIME...
+
+**[Speaker 1]:** Hmm.
+
+**[Speaker 3]:** Oh, you are speaking about generating SHAP and LIME.
+
+**[Speaker 1]:** Yes on that... in that script he put exactly that. I think it takes... SHAP and LIME takes multiple [inputs]. It needs two-three things definitely actually. One it needs Training Model... meaning Train Model.
+
+**[Speaker 4]:** Like... like this generated after Imputation right... I was in this Vintage Month. Right.
+
+**[Speaker 1]:** Target Month... so it is like this right... that first row will go to SHAP and LIME... this whole thing... and corresponding to that it will generate SHAP and LIME features... whatever things... then second is this... will generate for that... it will work like this... you are saying right now?
+
+**[Speaker 2]:** Then we will have to... meaning modify the SHAP one a little right... in this... But you were telling us right... Speaker 1... all these things.
+
+**[Speaker 1]:** Hmm... Model... in a way Train Model is needed definitely... that is done... Features we will get... In Training what will happen is that... it is like this right... I will tell... three things it needs definitely. First it needs Train Model. Second it needs its Background Data which is coming from Training. Okay? And third it needs... New Instance's... Yes. And New Input Data... like the row... meaning which [name] took for January right... needs that.
+
+**[Speaker 2]:** Where is that given... ask [that].
+
+**[Speaker 1]:** That actually is not given right now.
+
+**[Speaker 2]:** Yes that...
+
+**[Speaker 3]:** Like he did for one month... so that one month is given right... somewhere... is this 'Months Look' telling that?
+
+**[Speaker 1]:** That... meaning telling Len[gth] of Original... Check this once what is this. On this... One minute. check Len of DG... what is it first once. Its...
+
+**[Speaker 3]:** Check its Length...
+
+**[Speaker 1]:** What row is data frame's... it basically 36... so will give 36... 36. Actually we will have to send all background data to it... otherwise it won't... meaning won't be able to do Swap [SHAP] Analysis.
+
+**[Speaker 2]:** So Background Data... that will be fixed.
+
+**[Speaker 1]:** Yes Training Data which is there... have to give that to it. Understood? That is why we are giving Training Data.
+
+**[Speaker 3]:** No, fine, I don't have that much idea. But I was just trying to understand that the result of my Imputation...
+
+**[Speaker 1]:** Hmm.
+
+**[Speaker 3]:** I will loop over it... so how is the first row... second row of that being used inside this? I wanted to know that. This... okay... I will get from the Model you trained... tested. Right? FX Feature Name, Model Type, Model. Right?
+
+**[Speaker 1]:** Hmm so here in place of DF Data... right? Here that row needs to be put. Actually.
+
+**[Speaker 2]:** Features Data... yes have to put that. Meaning that...
+
+**[Speaker 1]:** To explain... that needs to be explained... that you...
+
+**[Speaker 2]:** This `X`...
+
+**[Speaker 1]:** No no not that... To Explain. Training we gave. Testing perhaps Might Be... have to give here only... this is it I guess... Explain is... One minute... one minute wait... Okay here it should be... We have Model... We have Feature... We [have] Training Data... `X_explain`...
+
+**[Speaker 2]:** Yes in `X_explain` only... data will come here actually.
+
+**[Speaker 1]:** The one picking row from For Loop...
+
+**[Speaker 2]:** Future Month's... yes the data of Future Month will come in `X_explain`. Hello.
+
+**[Speaker 1]:** Yes, yes.
+
+**[Speaker 2]:** Hmm.
+
+**[Speaker 1]:** So the Data To Explain right... meaning in a way we need explanation of that one right... the row which is ours... a new row which came for January... so its data will come here. We do one thing... let's not do this big code. Let's do a small code just for testing purpose and test it.
+
+**[Speaker 2]:** Yes that only.
+
+**[Speaker 1]:** Right? Because when a small code gets channeled... Then after that we will implement all this thing in this.
+
+**[Speaker 2]:** Yes Speaker 2 right? If this is looking complicated then...
+
+**[Speaker 1]:** Hmm.
+
+**[Speaker 2]:** And one thing... in SHAP what happens... I Just Read that in SHAP [it] Can Either Give One Row or a Complete Batch. It gives explanation of Complete Batch also. For LIME have to give only one row. LIME Is Instance Based. A SHAP Can Be Instance Based or Batch Instance Based.
+
+**[Speaker 1]:** But in our case we are giving Instance Base right. In a way we [are] in Instance both right?
+
+**[Speaker 2]:** Okay. Correct.
+
+**[Speaker 1]:** Have to give Instance Base because you have to generate AI Summary of every single one right?
+
+**[Speaker 2]:** Yes.
+
+**[Speaker 1]:** And of one... meaning...
+
+**[Speaker 2]:** One Target Month.
+
+**[Speaker 1]:** No then...
+
+**[Speaker 2]:** For one Vintage Month there will be only one.
+
+**[Speaker 1]:** Good that... No we weren't saying that. Yesterday the dictionary we will make and...
+
+**[Speaker 1]:** That this 2026-01 is... 18602 is... so for everyone AI Summary will be same. Are you saying like that?
+
+**[Speaker 2]:** Correct, Correct. But I told you... will keep Type a Yearly and Monthly. In Yearly there will be only one Summary. And in Type Monthly... assume January is our Vintage Month. 12 Month's AI Summary will repeat. Same AI Summary will repeat.
+
+**[Speaker 1]:** Okay, Okay. So then we will need to run loop... need to run loop in Live? Need to run Loop what?
+
+**[Speaker 2]:** Speaker 4 Is Saying that he is taking of First Month... is taking that. Giving everything prediction. But That Might Not Be A Good Approach. Look The Problem Statement Is... we have to give them Yearly one staying in January. This all Target Month you are seeing right... One to 12... making sum of Predicted Revenue of all these... have to show them that staying in January Month we have predicted this much Yearly.
+
+**[Speaker 2]:** So why predicted this much? We might not be able to show them at Yearly Level because our Prediction[s] Are At A Monthly Level.
+
+**[Speaker 1]:** Monthly Level is right.
+
+**[Speaker 2]:** Correct, Correct.
+
+**[Speaker 1]:** So if we show at Yearly Level then we will have to do... that in this month this was this... hence this increased... in this month it was like this... this decreased... so [by] increasing-decreasing like this for 12 months... Yearly We Reach This Figure.
+
+**[Speaker 2]:** This Can Be Explanation. But Speaker 4 Is Saying that what we have done? Vintage Month which is... we are giving SHAP [and] LIME analysis of Same Month only for Summary Generation. Okay? Plus these 12 rows you are seeing... Vintage Month Target Month Unpredicted... giving this also. Plus giving this Predicted Revenue by summing. Okay? Plus giving some features of Historical Month also.
+
+**[Speaker 2]:** Analyzing all these a summary is being formed.
+
+**[Speaker 1]:** Correct.
+
+**[Speaker 2]:** Okay.
+
+**[Speaker 1]:** Okay.
+
+**[Speaker 2]:** We Are On The Same Place. Right?
+
+**[Speaker 1]:** Hmm.
+
+**[Speaker 2]:** Yes. Okay. Then I just had to Reiterate.
+
+**[Speaker 1]:** Okay. Okay.
+
+**[Speaker 2]:** Okay. Okay.
+
+**[Speaker 1]:** Okay. We make changes [to] this once and however it happens we pin you... meaning or take on call if some issues happen... this doubt happens.
+
+**[Speaker 2]:** Okay. Okay.
+
+**[Speaker 1]:** Okay. Okay. All right.
+
+**[Speaker 2]:** Thanks.
+
+**[Speaker 1]:** One more thing. One thing more... like that I show right now... you might be seeing here... from where... going down... right now I was making dynamic that right... This Pipeline one opened... this Model Pipeline opened... sorry... Transformation... go Back... go Back Back... One minute. Hmm. Like I had told you... that right now Time for you...
