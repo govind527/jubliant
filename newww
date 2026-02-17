@@ -1,0 +1,171 @@
+Based on the audio file excerpts provided, here is a detailed English transcript of the meeting.
+
+**Note:** The names have been replaced with **Speaker 1**, **Speaker 2**, and **Speaker 3** to maintain anonymity. The original conversation is a mix of Hindi and English; this transcript has been translated into English for clarity while retaining the technical context.
+
+***
+
+### **Part 1: Discussing Model Training Modes & Scripts**
+
+**Speaker 1:** Let me share my screen and show you. I guess I sent you this script earlier?
+
+**Speaker 2:** Yes, perhaps.
+
+**Speaker 1:** So, we only need to take the training part here, right? Mostly the training part, not all of it. If you go to "Main," there are two modes of operation.
+
+**Speaker 2:** Yes.
+
+**Speaker 1:** One is "Train and Predict," and the other is "Predict Only." So, what do you have to do? You have to create a script around this "Train and Predict." We don't actually need to predict right now. Or actually, just include "Train and Predict" because when we train for experimentation purposes...
+
+**Speaker 2:** We need to see the prediction there to know how it looks. Otherwise, we won't update the model; we will revert. Correct?
+
+**Speaker 1:** Do you understand? So, do this: Don't directly replace the final models that are getting used for inference. This "Train and Predict" mode will work. Okay? After that... what is the most optimal way?
+
+**Speaker 2:** Actually, this includes all three, right? Training, Inference, and Imputation.
+
+**Speaker 1:** Yes, yes. Listen, in "Train and Predict," there is training, inference, and imputation. In "Predict," there is prediction and imputation, but no training.
+
+**Speaker 1:** So that is one mode. Now, tell me one thing—for the demo right now, should we include the training script or not? Start working on the training script. Okay?
+
+**Speaker 2:** Yes, because I will make changes. Suppose it breaks in the backend, then the demo... suppose they ask to show it from the start, things will get messed up. We will ingest this in a new script.
+
+**Speaker 1:** Listen, make a separate model pipeline for this training script. Create a separate Notebook. Don't keep it in the same one.
+
+### **Part 2: Integration and Data Pipeline Strategy**
+
+**Speaker 1:** One minute, let me add [Speaker 3] so he can also provide input.
+
+**Speaker 3:** Okay. So, the training script will be a new one—their own script ending in `.py`. How do we implement this script? We have to run it in a Notebook, right? Just like we did for the inference/transformation scripts?
+
+**Speaker 1:** No, no, this will be a separate script. You have to run it separately one by one to see if it’s working in the database.
+
+**Speaker 3:** No, I mean how do we connect it? Suppose our data has arrived in one script. The second script is our training. How do we connect the training to the data script so that our model trains, and then the cycle repeats? The trained model will only run once a year, right?.
+
+**Speaker 1:** The training script will run once a year. Okay? So keep it completely separate from the data pipeline. Your code will mostly remain the same. I am showing you again—I showed [Speaker 3] earlier. There are two modes.
+
+**Speaker 1:** "Train and Predict" means training happens on the go, and prediction happens using that finalized model. And "Predict Only"—our Notebook is already set for that. That is the ML pipeline. Why do we keep "Train and Predict"? Suppose once a year when we train, we get new data or a full year's data; we have to test if it's coming out correct or not. Right?
+
+**Speaker 2:** Yes. So because of that, if we keep prediction enabled, we get a visualization of how our model is performing.
+
+**Speaker 1:** So, you have to take care of what is happening in this block. The supporting functions, events, everything in this block—you have to take care of that.
+
+**Speaker 2:** Meaning here we just have to look at "Train and Predict," right? We have nothing to do with "Predict Only."
+
+**Speaker 1:** Correct, correct.
+
+### **Part 3: Model Versioning and Updates**
+
+**Speaker 2:** Tell me one thing, when you "Predict," that is basically for testing purposes, right? The actual output that goes into the forecast...
+
+**Speaker 1:** It won't update. It will only predict.
+
+**Speaker 2:** Okay. Just ensure that whenever you run the model, it should update so I can use the updated model.
+
+**Speaker 1:** Correct. We can handle it such that we don't update directly. Suppose this is not the final version; I am fine-tuning. One year of data arrived, and I need to change a few things. If I run it, it updates every time in the external managed volumes. So, we can keep a parameter: `Update Model = True` or `False`. If it is `True`, then the model you upload to our Catalog Schema in managed volumes will be updated. Otherwise, it won't be.
+
+**Speaker 2:** Meaning if you set it to `False`, you just check it. If you set it to `True`, the model is finalized and will update. Right?
+
+**Speaker 1:** Yes. Tell me one more thing—we put it in the Volume. We did that because we don't have the model registered yet. Will the Volume work, or do we have to register it in the Catalog?
+
+**Speaker 3:** If it works with the Volume, why go through the trouble...
+
+**Speaker 2:** No, I’m asking in case someone asks during the call. "Why didn't you register the model?" They asked that last time.
+
+**Speaker 1:** We are looking into it. Let it run for now. And [Speaker 3], one thing you can do: Instead of updating the final models in the folder where we fetch from, create a temporary "Training Version" or "Intermediate Model" folder. You can update the model there so our final one doesn't get overwritten.
+
+**Speaker 1:** When the flag is `False`, you upload the model to the Training Version folder. When it is `True`, the final one updates.
+
+**Speaker 2:** So when it is `False`, every time you retrain, you want to keep all those versions separately?
+
+**Speaker 1:** Yes, in a separate temporary folder. When it is `True`, it will save to the temporary folder *and* update the one we are currently using in the Volume. Both should happen.
+
+### **Part 4: Manual Training vs. Automation & Data Drift**
+
+**Speaker 3:** I want to know about this `Update = Yes/No` flag. On what condition will this be based? Will it happen when the year changes? For example, when 2026 ends?
+
+**Speaker 1:** We will do it manually. The training pipeline is a manual script.
+
+**Speaker 3:** Okay, so we just have to set it.
+
+**Speaker 1:** If we try to automate the training, there are many scenarios where it will fail. As I told you, data drift is happening every year. The data changes, so we have to change the features. To ensure the model gives a good result, even if we do it through a pipeline, it's possible... but given the nature of our data, because it is very collinear, feature selection doesn't work on our data. We have to do this manually.
+
+**Speaker 2:** So, as you are saying, some new attributes might be added to the feature list. So we will have to change the feature list we use in Imputation and Inference as well, right?
+
+**Speaker 1:** I think most features will come from the model itself. In Imputation, there is logic to handle all features.
+
+**Speaker 2:** Just as you have applied logic for the features created so far in the transformation script, if you create new features, we have to add those too, right?
+
+**Speaker 1:** Correct. My transformation script has it. What I am thinking is... there won't be changes in the transformation script. The changes will mostly be in the Imputation and Inference sections.
+
+**Speaker 2:** I thought if you are creating a new feature, it should come as a column in our transform data as well, right? For every month.
+
+**Speaker 1:** A transform date can be made. Right now, I need to fine-tune the model.
+
+**Speaker 1:** One more thing regarding data drift. I might have to add some existing features—features we had commented out from Training and Inference. A few of them might come back into the pipeline. Or, I might make new features. For example, right now, there is a big difference in January regarding the yearly revenue forecast.
+
+**Speaker 1:** What I was thinking is... I will give Year-Over-Year. Like, what was it last January? The FP&A forecast vs. the current year/current month yearly forecast. I will take a ratio of those two and create a column so we know...
+
+**Speaker 2:** You will only consider January for this? Or create it for all months, like a Year-on-Year?
+
+**Speaker 1:** I was thinking of only January because that is where the drift is high. Or I could do it such that I take the Last Month (e.g., December was 208 something) and compare it to the current (213 or 238). I will take their ratio so the model knows: "I predicted this much last time, now it is this much, so I should predict more." I am going to try that. So, we have to be open to these things. We want to keep things modular.
+
+### **Part 5: Managing Delta Tables**
+
+**Speaker 2:** If a new feature is added, what changes? The transformation script, Imputation, and the feature list in Inference will change. Then the Delta Table will change. [Speaker 3], can we append a column to an existing table, or do we have to drop and recreate it?
+
+**Speaker 3:** No, we can add it. But I am asking, if you add it for the new month, what about the previous months? Will they show as NULL? Or do we calculate for them too?
+
+**Speaker 1:** Look, I will make it in a sheet. I will take the newly created columns plus our existing Delta data, download it, and merge them to make a final table so that nothing comes up as NULL. Or, I can make a script—a separate Notebook called "Update or Add New Features." It will fetch the Delta table, take the local one, merge them, and update the final Delta table.
+
+### **Part 6: Demo Preparation & Dashboard Walkthrough**
+
+**Speaker 1:** [Speaker 3], are you ready for the demo?
+
+**Speaker 3:** Yes, ready. We don't have to go too technical, right? Just show it from a high level?
+
+**Speaker 1:** Yes, if they ask, we have to show what is happening at each step. Not a full code walkthrough, but what are the intermediate steps and their outputs?
+
+**Speaker 3:** Yes. We can explain, for example, in the Imputation function, we are repeating columns based on the revenue of the previous month. They will understand what the code is doing. If we go line-by-line, it will take too much time because the transformation script alone is 2,000 lines.
+
+**Speaker 1:** Right. So, this is our Forecast Dashboard. 2026 FP&A is this much, Model is this much, and this is the variance. The analysis period is one month. This is the Monthly Revenue for January. Then Summary 1 shows the overall summary. There is some redundant information here, but it's a bit more detailed. Basically the same thing—FP&A vs Model vs Delta variance.
+
+**Speaker 2:** Is this summary at a monthly level?
+
+**Speaker 1:** It is at a yearly level.
+
+**Speaker 2:** No, I mean you are selecting the month there.
+
+**Speaker 1:** Yes, meaning in this month, how much is the yearly prediction?
+
+**Speaker 2:** Okay, so if I look at Jan, I am seeing the sum for Jan to Dec based on the imputation we made.
+
+**Speaker 1:** Correct. And on the Dashboard page, we are looking at January within January. Then the Model Prediction at different confidence intervals. What is the range? Lower and upper limits. Then the Executive Summary: "January 2026 Revenue Forecast reflecting a 5 point..."—this is on a monthly level. Then on a yearly level: "2.16 Billion representing 7.9% compared to last year." Key highlights, revenue growth, deal conversion, etc. And a bottom-line conclusion. I know I have to format this; the text is too small.
+
+### **Part 7: Security and Final Checks**
+
+**Speaker 1:** If you have to open the database, don't store the access keys here.
+
+**Speaker 2:** Access keys... we can't make a Databricks secret? Should we hide the cell?
+
+**Speaker 1:** Yes, hide it.
+
+**Speaker 2:** Before running it for them, run it yourself first.
+
+**Speaker 1:** Hide the code. Check if it runs even when hidden. Is the key anywhere else?
+
+**Speaker 3:** No.
+
+**Speaker 1:** Check the wrapper at the very bottom where it is called.
+
+**Speaker 3:** No, it's not there... Oh, look at the code, the storage is provided there. No one will see it, but...
+
+**Speaker 1:** Hide it. Be careful, [Speaker 3]. Show them how the multi-agent is working. Don't go to the output code.
+
+**Speaker 1:** It's already run, right? Don't run it for January now.
+
+**Speaker 3:** Should I run it for March to check?
+
+**Speaker 1:** Yes, click "Run All" at the top.
+
+**Speaker 3:** It's taking time... parameterization... reading the raw file... okay, Imputation is running now.
+
+**Speaker 1:** It's rendering. But why is the "1, 2, 3" list not showing up? There are some rendering issues. If they are using a markdown renderer, I don't understand why it's not showing a simple preview. It shows in the blog but not here.
