@@ -111,15 +111,18 @@ My feeling is they are likely influenced by the same features, though some compo
 **Speaker 3:** Okay, I will read the code to see which functions are being called.
 
 ----------------------------
+Part 1: Mathematical Logic and Modeling Approaches (A vs. C)
+Speaker 1: So, if we do a delta by the initial value, and the value is less than 1, we will add 1 to the current value. Look, for example, if Company X's revenue in 2025 was 100. And it increased by 50% in 2026. What will we do for 2026? We will do 100×(1+0.5).
+Speaker 2: Okay, I get it. You basically have to make it a total of 1.5. One more thing, in Thursday's call you mentioned that we had four approaches, but we are basing it on Approaches A and C, and specifically focusing on C. Both A and C are implemented. In Approach A, it straight away takes 100% equal variance for all the features in the list, right? The weights will be equal?
+Speaker 1: Yes, the list of features we provide will have equal variance and equal weightage in Approach A. But in Approach C, we will provide another list that specifies the percentage contribution of each feature—like committed, signed, unsigned, and weighted.
+Speaker 2: Right. I have done that here. For example, committed is 0.5, this one is 0.3. So, I have assigned weights. It is parsing into a dictionary. Are these numbers (like 0.5) fixed, or do we directly feed them? Could it be 0.6 or 0.7?
+Speaker 1: These numbers will be provided by [Colleague]. We don't need to do different iterations to find the best result; we just use the weights provided.
+Speaker 2: Okay. I haven't implemented the two parts of Approach B because we decided not to do them since their results weren't very good. Next, I am testing the output on the new data because I felt my previous data was incorrect. I need to get the prediction intervals, in addition to the normal 95% and 85% z-basis intervals, to see which approach (A or C) is performing better.
 
-Speaker 1: Regarding Approach A and C, similarly B1 and B2, because in B1 and B2 we are simulating scenarios to find the range and providing the minimum and maximum. That doesn't bring any picture of valid variance; we aren't manually providing what committed or uncommitted signs will contribute. What do you think, should we go with Option C? The difference between A and C is that C is weighted, and A is not.
-Speaker 2: Yes, let's go with that.
-Speaker 1: Okay, then we'll use the same thing. It can be reused. It's okay if I give weights to that. We can set this portal config here. So whatever weights there are, you are distributing them equally, correct?
-Speaker 2: Yes, but the same thing would change, right?
-Speaker 1: That's okay. Even that is what [Colleague] wants. Right, Option C. Let's discuss this today and also connect with [Colleague]. This is the approach we will use, but before that, you need to be sure.
-Speaker 2: Okay, I will implement it. I have started.
-Speaker 1: Let's connect at 3 PM today. We'll finalize it and ask once again.
-Part 2: Model Fine-Tuning & Feature Engineering (YoY Growth Rate)
-Speaker 1: One more thing, you are working on fine-tuning the model. I have thought of something but haven't implemented it yet. I will take the growth rate of the forecast from the previous year. Another thing is, they are forecasting 238 something, and they want us to be near to that.
-Speaker 2: Then what is the model doing? It's not making a difference, right? We are just tagging along with the forecast and trying to reach that.
-Speaker 1: We are just guiding it. They want to make sure their predictions are proven. It's kind of like an astrologer who wants to back their prediction through science. They have predicted something and want to show that the ML model aligns with it
+
+Part 4: Imputation Logic and Saving Outputs
+Speaker 2: How are we using the "Carry from vintage features"? Are we adding them into the imputation logic to extrapolate for future months?
+Speaker 1: Yes, whatever true value comes in January will be carried forward to February, March, up until December. You will have to put that into the transformation script so the columns flow properly. Just copy and search the term "carry from vintage features" in the inference script, and you will find it.
+Speaker 2: Okay, understood. Finally, we need all the ranges and prediction up/down limits to be saved. Are they coming into the CSV?
+Speaker 1: Yes, everything should be saved in eld_summary.csv.
+Speaker 2: Okay, I see it. I will print it and check the final results based on the prediction ranges. Thanks, I will ping you if I need anything else.
