@@ -109,3 +109,17 @@ My feeling is they are likely influenced by the same features, though some compo
 **Speaker 2:** Just ensure that when we send data at the EXL level, the `Entity Name` is handled correctly (either `NA` or removed). Use a sanitizer to handle that.
 
 **Speaker 3:** Okay, I will read the code to see which functions are being called.
+
+----------------------------
+
+Speaker 1: Regarding Approach A and C, similarly B1 and B2, because in B1 and B2 we are simulating scenarios to find the range and providing the minimum and maximum. That doesn't bring any picture of valid variance; we aren't manually providing what committed or uncommitted signs will contribute. What do you think, should we go with Option C? The difference between A and C is that C is weighted, and A is not.
+Speaker 2: Yes, let's go with that.
+Speaker 1: Okay, then we'll use the same thing. It can be reused. It's okay if I give weights to that. We can set this portal config here. So whatever weights there are, you are distributing them equally, correct?
+Speaker 2: Yes, but the same thing would change, right?
+Speaker 1: That's okay. Even that is what [Colleague] wants. Right, Option C. Let's discuss this today and also connect with [Colleague]. This is the approach we will use, but before that, you need to be sure.
+Speaker 2: Okay, I will implement it. I have started.
+Speaker 1: Let's connect at 3 PM today. We'll finalize it and ask once again.
+Part 2: Model Fine-Tuning & Feature Engineering (YoY Growth Rate)
+Speaker 1: One more thing, you are working on fine-tuning the model. I have thought of something but haven't implemented it yet. I will take the growth rate of the forecast from the previous year. Another thing is, they are forecasting 238 something, and they want us to be near to that.
+Speaker 2: Then what is the model doing? It's not making a difference, right? We are just tagging along with the forecast and trying to reach that.
+Speaker 1: We are just guiding it. They want to make sure their predictions are proven. It's kind of like an astrologer who wants to back their prediction through science. They have predicted something and want to show that the ML model aligns with it
