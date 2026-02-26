@@ -1,128 +1,15 @@
-Based on the audio file "Wednesday, 8_41 pm.m4a" provided in the sources, here is a detailed English transcript of the meeting.
-
-**Note:** The conversation originally takes place in a mix of Hindi and English. This transcript has been translated to English for clarity. Real names have been replaced with **Speaker 1**, **Speaker 2**, and **Speaker 3** to maintain anonymity.
-
-***
-
-### **Part 1: API Strategy – Bulk Data vs. Individual Calls**
-
-**Speaker 1:** We don't want to make individual calls for specific SUs (Sub-Units). We would like to have all the data for all SUs and filter them on the UI. That is what we were thinking—we can make calls for all SUs based on the UI.
-
-**Speaker 2:** We actually discussed this before.
-
-**Speaker 1:** Did we discuss anything related to SUs (Sub-Units) there?
-
-**Speaker 2:** No, not regarding SUs specifically.
-
-**Speaker 1:** Look, right now we are conceptualizing. We are discussing at the model level. At that level, we will train the data. There will be dynamic features and many other things. So, create a placeholder for now. It seems it will take some time.
-
-**Speaker 2:** So for model training, we will have to create features for those SUs.
-
-**Speaker 1:** Yes.
-
-**Speaker 2:** But this is modifiable later, right? If we want to get values for different SUs through different API calls later, we can do that. We can make it a parameter. But for now, our initial idea was: "Let's make it parameterized so the API response doesn't become too heavy." But after talking to [Colleague/Stakeholder], he said, "No, let's have all the data at once".
-
-**Speaker 2:** But if we bring all the data in the response—it is only 37 SUs, and if each SU has a maximum of 24 months, that will be a very heavy response. That was my answer as well—let's do one SU at a time.
-
-**Speaker 1:** Right, sending everything isn't ideal. What I would recommend is: If we have a dropdown on the UI (React), when we change the dropdown value (the SU value), we make an API call with that parameter.
-
-**Speaker 2:** So you are saying the SU names will come from the UI?.
-
-**Speaker 1:** Yes. We send that into the SQL query and fetch the 13 or 24 months of data for that specific SU only.
-
-**Speaker 2:** But that might be time-consuming. If we get all data at once, filtering on the UI allows for quickly viewing different SUs. If we fetch separately, every time we change the SU, it calls the API again. It’s a trade-off: The first bulk call is expensive (10-20 seconds), but subsequent switching is instant. Versus fast individual calls that happen every time you switch.
-
-**Speaker 1:** Can't we do this: Fetch the default SU data first. Then, while the user is looking at the first SU, we fetch the rest in the background?.
-
-**Speaker 2:** Lazy loading?.
-
-**Speaker 1:** Yes, fetch in the background and cache it. That is economical. We can handle that on the UI side. On the API side, we can't send it in batches, but the UI can trigger multiple calls in parallel after the first load.
-
-### **Part 2: Feature Engineering Challenges (Entity vs. SU Level)**
-
-**Speaker 1:** Okay. Also, building the model at the SU level is a bit complicated. If the current model setup works for the SU level, that is well and good. But if we have to do feature engineering or feature selection specifically for it, that will be difficult.
-
-**Speaker 2:** It is possible that for different SUs, we might need different feature sets. Also, another concern: In our transformed data (Delta Table) where we store data, it is specific to our EXL (Entity Level) model. When we do this for SUs, if we change the feature set, we have to add different columns. It will become a bigger table.
-
-**Speaker 1:** If it becomes a bigger table, so be it.
-
-**Speaker 2:** It implies that if the EXL level has 20 rows, and an SU has 25 rows, the extra 5 will show as NULLs for the EXL level.
-
-**Speaker 1:** Why would they be blank? Let's say we are using "Lag 1" as a feature in the EXL model. Even if we don't use it for the SU level, we will still calculate it. We will calculate all features for both EXL and SUs, so NULLs won't appear.
-
-**Speaker 2:** Okay, so the feature list you want to use will be handled by the model configuration?.
-
-**Speaker 1:** Yes, store the feature list in the config and use it at runtime.
-
-### **Part 3: Modularizing the Training Script**
-
-**Speaker 3:** My concern is regarding the training. Since we have, say, 7 SUs, we have to generate artifacts for all of them. So, for the training script, will we need to implement a loop?.
-
-**Speaker 1:** Correct. Imagine your training section. First, it runs once as "Vanilla" (for the main entity). Second, you use a `For Loop`. Inside the loop, you filter the data for that particular SU. The entire carry-forward step, imputation, and feature engineering will happen on that filtered data.
-
-**Speaker 3:** So the data gets restricted based on the filter (e.g., Operations) we pass in the loop?.
-
-**Speaker 1:** Yes. You have to look at the code to see how to cover both EXL and all SUs with minimal code changes. In the training pipeline, you have a snippet for conditional modeling, right? You need to handle that dynamically. If it is EXL, then `None`. If it is an SU, use the Entity Name as a prefix for the model name.
-
-**Speaker 2:** So naming and everything will be dynamic.
-
-**Speaker 1:** Listen, in the "Train and Predict" block of your main function, modularize it. Make it a function.
-1.  **Parameters:** Pass `Entity Name` and `Entity Type`.
-2.  **Execution:** First, call this function for EXL (Entity Type = EXL, Name = NA). The data won't be filtered (it takes the whole set).
-3.  **Loop:** Next, loop through the list of SUs. Call the function with `Entity Type = SU` and `Entity Name = [Item in List]`.
-
-**Speaker 1:** The function will filter the data, train the model, and update the transformed data. I want to modularize this because both fields (Name/Type) will dictate the model naming convention.
-
-### **Part 4: Storing Predictions and Hypothesis Testing**
-
-**Speaker 3:** As I did in the previous presentation, I ran a loop for departments, passed the model and features, and appended the results into a single table. In our case, this is the Delta Table. So, the predictions for every model (every department) will be appended and stored there.
-
-**Speaker 1:** Yes, training and inference will work that way. But first, we need to test this locally. We need to check if the current set of features for the EXL level works for the SUs.
-
-**Speaker 1:** **Brainstorm this:** If $Y = A + B + C$ (e.g., $10 = 5 + 2 + 3$). And if 10 is influenced by features $X1, X2, X3$. Are the components (5, 2, and 3) influenced by those same features? Or do they have different influences?.
-My feeling is they are likely influenced by the same features, though some components might have unique features. We need to verify if this hypothesis holds true.
-
-**Speaker 2:** You mean, since we did everything at the SU level, we can roll it up to the EXL level later?.
-
-**Speaker 1:** Theoretically, yes. Like if something is happening in Delhi (Entity), and inside Delhi there are specific localities (SUs), the events in the localities affect Delhi. But we need to see if this holds true for our data. It is a hypothesis right now.
-
-### **Part 5: Action Items**
-
-**Speaker 1:** I am working on the multivariate variants locally. Once I finalize that with [Colleague Name], you guys also proceed. But I will test locally if the EXL feature set works for SUs.
-
-**Speaker 2:** I will try it for one SU locally.
-
-**Speaker 1:** Yes, try for one.
-
-**Speaker 3:** I have updated the training script as you asked. I'll update the group so [Colleague Name] knows.
-
-**Speaker 1:** Okay. Also, update the API placeholder stuff. Treat it as a placeholder for now.
-
-**Speaker 3:** Can you explain the API placeholder again? I am new to APIs.
-
-**Speaker 1:** Just as you are sending one row for EXL, insert one row for each SU into the Transformed and Result tables. Maybe just for January.
-
-**Speaker 2:** We need to define the schema and response structure. Currently, for identification, we just have `Entity Name`. If it is EXL, it is `NA`. If it is an SU, it is the SU name.
-
-**Speaker 1:** That is fine. But coordinate with [Colleague/Stakeholder] about that bulk load vs. lazy loading. If we send one SU, the response size becomes small.
-
-**Speaker 2:** Just ensure that when we send data at the EXL level, the `Entity Name` is handled correctly (either `NA` or removed). Use a sanitizer to handle that.
-
-**Speaker 3:** Okay, I will read the code to see which functions are being called.
-
-----------------------------
-Part 1: Mathematical Logic and Modeling Approaches (A vs. C)
-Speaker 1: So, if we do a delta by the initial value, and the value is less than 1, we will add 1 to the current value. Look, for example, if Company X's revenue in 2025 was 100. And it increased by 50% in 2026. What will we do for 2026? We will do 100×(1+0.5).
-Speaker 2: Okay, I get it. You basically have to make it a total of 1.5. One more thing, in Thursday's call you mentioned that we had four approaches, but we are basing it on Approaches A and C, and specifically focusing on C. Both A and C are implemented. In Approach A, it straight away takes 100% equal variance for all the features in the list, right? The weights will be equal?
-Speaker 1: Yes, the list of features we provide will have equal variance and equal weightage in Approach A. But in Approach C, we will provide another list that specifies the percentage contribution of each feature—like committed, signed, unsigned, and weighted.
-Speaker 2: Right. I have done that here. For example, committed is 0.5, this one is 0.3. So, I have assigned weights. It is parsing into a dictionary. Are these numbers (like 0.5) fixed, or do we directly feed them? Could it be 0.6 or 0.7?
-Speaker 1: These numbers will be provided by [Colleague]. We don't need to do different iterations to find the best result; we just use the weights provided.
-Speaker 2: Okay. I haven't implemented the two parts of Approach B because we decided not to do them since their results weren't very good. Next, I am testing the output on the new data because I felt my previous data was incorrect. I need to get the prediction intervals, in addition to the normal 95% and 85% z-basis intervals, to see which approach (A or C) is performing better.
+Part 4: Model Under-prediction and Feature Engineering
+Speaker 1: Let's look at this, and [Speaker 5], you look into the model fine-tuning. What is happening right now is that the model is under-predicting. When you run the script, you will see a model equation in the middle. Look at that equation to see how it is predicting. What are the weights of the model? Check the importance of those features. Try to extract some more features that make sense so that it stops under-predicting. Figure out why it is under-predicting.
+Speaker 5: Understood. We had added that feature of mine earlier—the Revenue MACD (Moving Average Convergence/Divergence).
+Speaker 1: We did, but it didn't work that well. [Speaker 4], you probably tried it, right?
+Speaker 4: Yes, I did. But we should add it once with the new features that have been created and check how the combination works now.
+Speaker 1: Yes, try adding it and check.
+Speaker 5: Okay, I will add some new ones. Make changes in the sheet, the data file, and the script I sent you. Oh, it's with the A and C approach you added. Actually, another thing I need to do is output the date for the variance. You look into that...
+Speaker 4: I will look into it.
 
 
-Part 4: Imputation Logic and Saving Outputs
-Speaker 2: How are we using the "Carry from vintage features"? Are we adding them into the imputation logic to extrapolate for future months?
-Speaker 1: Yes, whatever true value comes in January will be carried forward to February, March, up until December. You will have to put that into the transformation script so the columns flow properly. Just copy and search the term "carry from vintage features" in the inference script, and you will find it.
-Speaker 2: Okay, understood. Finally, we need all the ranges and prediction up/down limits to be saved. Are they coming into the CSV?
-Speaker 1: Yes, everything should be saved in eld_summary.csv.
-Speaker 2: Okay, I see it. I will print it and check the final results based on the prediction ranges. Thanks, I will ping you if I need anything else.
+Part 2: Model Fine-Tuning & Feature Engineering (YoY Growth Rate)
+Speaker 1: One more thing, you are working on fine-tuning the model. I have thought of something but haven't implemented it yet. I will take the growth rate of the forecast from the previous year. Another thing is, they are forecasting 238 something, and they want us to be near to that.
+Speaker 2: Then what is the model doing? It's not making a difference, right? We are just tagging along with the forecast and trying to reach that.
+Speaker 1: We are just guiding it. They want to make sure their predictions are proven. It's kind of like an astrologer who wants to back their prediction through science. They have predicted something and want to show that the ML model aligns with it. I am not saying what they are doing is wrong. Their accuracy is always high, but backing it by Machine Learning is a win-win for both them and us. So, I can tell you to keep only one feature: the Year-over-Year (YoY) growth rate.
+
