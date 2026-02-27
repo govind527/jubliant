@@ -1,15 +1,1 @@
-Part 4: Model Under-prediction and Feature Engineering
-Speaker 1: Let's look at this, and [Speaker 5], you look into the model fine-tuning. What is happening right now is that the model is under-predicting. When you run the script, you will see a model equation in the middle. Look at that equation to see how it is predicting. What are the weights of the model? Check the importance of those features. Try to extract some more features that make sense so that it stops under-predicting. Figure out why it is under-predicting.
-Speaker 5: Understood. We had added that feature of mine earlier—the Revenue MACD (Moving Average Convergence/Divergence).
-Speaker 1: We did, but it didn't work that well. [Speaker 4], you probably tried it, right?
-Speaker 4: Yes, I did. But we should add it once with the new features that have been created and check how the combination works now.
-Speaker 1: Yes, try adding it and check.
-Speaker 5: Okay, I will add some new ones. Make changes in the sheet, the data file, and the script I sent you. Oh, it's with the A and C approach you added. Actually, another thing I need to do is output the date for the variance. You look into that...
-Speaker 4: I will look into it.
-
-
-Part 2: Model Fine-Tuning & Feature Engineering (YoY Growth Rate)
-Speaker 1: One more thing, you are working on fine-tuning the model. I have thought of something but haven't implemented it yet. I will take the growth rate of the forecast from the previous year. Another thing is, they are forecasting 238 something, and they want us to be near to that.
-Speaker 2: Then what is the model doing? It's not making a difference, right? We are just tagging along with the forecast and trying to reach that.
-Speaker 1: We are just guiding it. They want to make sure their predictions are proven. It's kind of like an astrologer who wants to back their prediction through science. They have predicted something and want to show that the ML model aligns with it. I am not saying what they are doing is wrong. Their accuracy is always high, but backing it by Machine Learning is a win-win for both them and us. So, I can tell you to keep only one feature: the Year-over-Year (YoY) growth rate.
-
+this is file demo
