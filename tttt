@@ -1,13 +1,9 @@
 this is file demo
 
-Part 1: Forecast Data and Table Structure
-Speaker 1: How much did the model forecast in 2025? And what were the actuals for the previous month?
-Speaker 2: You mean the process where we take one vintage month and then look at all the target months after that? Doing that for every month?
-Speaker 1: Yes, exactly. That's what I was asking about the previous one.
-Speaker 2: Okay, then I will build it like that for all months. Do we need to make a new column for this, or will it be modified in the same one?
-Speaker 1: No, we will change it in the same one.
-Speaker 2: So, that monthly data was just being used here.
-Speaker 1: Yes, it is already kept in that one. [Speaker 3], we don't need it at the Delta level then. You'll have to make the changes on your Delta table, right?
-Speaker 3: We won't have to do it at that level. I mean, for the FP&A one, I will have to fetch it from the transform table, right? Because there is a revised forecast for every month there. But for the model forecast, I will fetch it from the model forecast output feature set table.
-Speaker 1: Every month, the FP&A forecast and model forecast will keep changing, and starting from January, they will become actuals (N+1).
 
+Part 1: Script Modularization for EXL and SU Levels
+Speaker 1: What's up? Is it [Speaker 2] or... I haven't been able to connect with you guys for a long time. So, regarding the data we had at the SU (Sub-Unit) and EXL (Entity) levels, we are testing the entire script for both levels. We are basically rewriting the entire code, encompassing training and inference from end to end. What if we just modularize the current script using the parameters Entity Type and Entity Name? That way, we can dynamically switch between the EXL model training/inference and the respective SU model training/inference.
+Speaker 2: We can do that. Actually, that's the best way because maintaining multiple separate scripts is too difficult. That's exactly what we were trying to figure out.
+Speaker 1: Because the date and model will change depending on the selection, the feature list will just come directly from the model artifacts.
+Speaker 2: Correct. The model selection will happen based on that, but we have to write the query conditionally so that if we select SU at the top, it fetches the SU data (like the Domain ops), and if we select EXL, it fetches the EXL data.
+Speaker 1: Yes, basically it will be handled by a conditional statement or an if-else block. Let me share my screen to show you how the notebook is set up for the Entity Name and Entity Type. We want to do this properly now so we don't rush and break things at the end. In the model training script, you manually change your feature list. Model training will be a function of Entity Type. If it is EXL, then Entity Name will just be NA. For the second scenario, like Domain Ops, Model Inference will use a For loop. It will loop through the entity list, and if the Entity Type is SU, it will run the inference for each one individually by passing the SU name column.
