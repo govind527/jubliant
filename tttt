@@ -1,1 +1,13 @@
 this is file demo
+
+Part 1: Forecast Data and Table Structure
+Speaker 1: How much did the model forecast in 2025? And what were the actuals for the previous month?
+Speaker 2: You mean the process where we take one vintage month and then look at all the target months after that? Doing that for every month?
+Speaker 1: Yes, exactly. That's what I was asking about the previous one.
+Speaker 2: Okay, then I will build it like that for all months. Do we need to make a new column for this, or will it be modified in the same one?
+Speaker 1: No, we will change it in the same one.
+Speaker 2: So, that monthly data was just being used here.
+Speaker 1: Yes, it is already kept in that one. [Speaker 3], we don't need it at the Delta level then. You'll have to make the changes on your Delta table, right?
+Speaker 3: We won't have to do it at that level. I mean, for the FP&A one, I will have to fetch it from the transform table, right? Because there is a revised forecast for every month there. But for the model forecast, I will fetch it from the model forecast output feature set table.
+Speaker 1: Every month, the FP&A forecast and model forecast will keep changing, and starting from January, they will become actuals (N+1).
+
