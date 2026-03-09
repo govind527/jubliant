@@ -1,14 +1,33 @@
 this is file demo
 
-Model Registry and Version Control Logic Next, a speaker asks for an update regarding the model registry
-. A team member expresses a technical doubt about how to implement it, asking if they need to add a cut-off date along with a timestamp during a script run, and how the loading mechanism will work
-.
-To solve this, a speaker proposes storing the model data in a configuration table during training runtime, which would include a column for the updated timestamp
-. To handle experimental models, they suggest introducing an "Active Indicator" column containing binary values (0 or 1)
-. If the team is merely experimenting with training runs and creating models they do not want to use in the final prediction pipeline, the Active Indicator will be set to 0
-. When a model is approved for production, its indicator is set to 1
-.
-During the inference stage, the pipeline will use a conditional statement to scan this registry table
-. It will specifically look for the row possessing the "maximum" (latest) timestamp where the Active Indicator is exactly equal to 1, and it will fetch that specific model's name to generate predictions
 
+Here is a detailed English transcript of the provided conversation, with all names removed and replaced with generic speaker labels to maintain anonymity:
 
+**Model Registry Logic and Active/End Dates**
+The conversation begins with a speaker sharing their screen to discuss a new approach for the model registry table. They propose implementing a "Start Date" and "End Date" logic, similar to SCD Type 2 (Slowly Changing Dimensions). Under this approach, when a new model is generated, it is assigned a "Start Date" and an "Active Flag" of 1, while its "End Date" remains null. If the script is run again and a newer version of the model is created, the older model's Active Flag changes to 0, and its previously null End Date is updated to match the new model's Start Date. This ensures the team maintains a complete historical record of when specific models were active and used for predictions. 
+
+**Parameterizing Training Months and Entity Types**
+Next, a speaker asks about the `include_month` (or `train_include_test_year_through_month`) parameter, wondering if they need to pass a list (e.g.,) to train up to June, or just a single integer. Another speaker clarifies that the script only requires a single integer (e.g., 5 means up to the fifth month) and shows the code logic confirming that it automatically filters for months less than or equal to the provided integer. They also discuss the need to add "Entity Name" and "Entity Type" parameters to the script, noting that in the future, SEO data will require entirely different models for different combinations of entity types.
+
+**Handling Experimental vs. Final Models**
+A speaker raises a concern about experimental model fine-tuning. If a team member is experimenting with a model and doesn't want it to become the final production model, they need a way to prevent it from overwriting the active registry. They suggest introducing a `mode` parameter set to either "experimental" or "final". If a training run is marked as experimental, its Active Indicator flag will be set to 0, or it will skip the final upload process, ensuring it does not become the active model used for inference. 
+
+**Model Loading, Archiving, and Timestamping**
+The team then discusses how to load the correct model for inference. A speaker outlines a multi-step filtering process: first, filter the registry using a wildcard base name (e.g., `model_cutoff_2025*`) to capture all month-variants (like `_01` or `_05`), and then filter for the row where the End Date is null or the Active Flag is 1. 
+
+However, a complication arises: if a user trains a model in "final" mode twice with the exact same name, the Databricks volume will physically overwrite the older file, even if the registry table tracks both versions. To prevent losing physical files, they briefly consider setting up an archive folder. Ultimately, they decide on a simpler, foolproof solution: appending the exact timestamp directly into the model's filename (e.g., `2025_01_[Timestamp].joblib`) when saving it. This ensures every file is unique, prevents overwriting, and the exact filename will be stored and referenced in the custom registry table.
+
+**Natural vs. Custom Inference Logic**
+The conversation shifts to a complex edge case regarding inference. A speaker asks what would happen if they are currently in October 2026 (with the latest model trained up to September), but they want to manually run a *custom* inference for March 2026. If they use the standard loading logic, the system will incorrectly pick the active September model, which might conflict with a past month's data. 
+
+To solve this, the team agrees they must build two entirely separate logics based on a trigger flag:
+1. **Natural/Monthly Inference:** This runs automatically. It looks for the model matching the `inference_year - 1`, applies a wildcard, and picks the model where the Active Indicator is 1.
+2. **Custom Inference:** This is triggered manually via a custom file path. For this, the script must look at the specific vintage/target month being requested and dynamically select the historically appropriate model (even if its Active Indicator is 0), rather than just grabbing the latest active model. 
+
+The team agrees to implement the straightforward natural inference logic first and tackle the custom logic afterward.
+
+**Databricks Catalog vs. Custom Registry Table**
+A team member asks why they are manually building this registry table instead of using the native Databricks Model Catalog, which automatically tracks versions. Another speaker explains that while Databricks does offer versioning, their specific use case—handling varying Entity Types (Excel vs. SEO) and highly specific vintage months—is too complicated. Maintaining their own custom configuration table gives them much stricter control over model selection and rollback capabilities. 
+
+**Dashboard Review and Over-predictions**
+In the final minutes of the call, the team reviews the UI dashboard for February 2026. A speaker notes that the chart currently only displays data for a two-month period (January and February) because it is the start of the year, which looks slightly strange visually but is expected. Looking closely at the forecast values, a speaker notices that the model's forecast appears to be over-predicting the revenue compared to expectations. The meeting concludes with a speaker stating they will open their source file to manually cross-check the API forecast numbers to investigate the discrepancy.
