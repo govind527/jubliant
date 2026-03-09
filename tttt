@@ -1,7 +1,6 @@
 this is file demo
 
 
-Here is a detailed English transcript of the provided conversation, with all names removed and replaced with generic speaker labels to maintain anonymity:
 
 **Model Registry Logic and Active/End Dates**
 The conversation begins with a speaker sharing their screen to discuss a new approach for the model registry table. They propose implementing a "Start Date" and "End Date" logic, similar to SCD Type 2 (Slowly Changing Dimensions). Under this approach, when a new model is generated, it is assigned a "Start Date" and an "Active Flag" of 1, while its "End Date" remains null. If the script is run again and a newer version of the model is created, the older model's Active Flag changes to 0, and its previously null End Date is updated to match the new model's Start Date. This ensures the team maintains a complete historical record of when specific models were active and used for predictions. 
