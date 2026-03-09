@@ -1,2 +1,14 @@
 this is file demo
 
+Model Registry and Version Control Logic Next, a speaker asks for an update regarding the model registry
+. A team member expresses a technical doubt about how to implement it, asking if they need to add a cut-off date along with a timestamp during a script run, and how the loading mechanism will work
+.
+To solve this, a speaker proposes storing the model data in a configuration table during training runtime, which would include a column for the updated timestamp
+. To handle experimental models, they suggest introducing an "Active Indicator" column containing binary values (0 or 1)
+. If the team is merely experimenting with training runs and creating models they do not want to use in the final prediction pipeline, the Active Indicator will be set to 0
+. When a model is approved for production, its indicator is set to 1
+.
+During the inference stage, the pipeline will use a conditional statement to scan this registry table
+. It will specifically look for the row possessing the "maximum" (latest) timestamp where the Active Indicator is exactly equal to 1, and it will fetch that specific model's name to generate predictions
+
+
