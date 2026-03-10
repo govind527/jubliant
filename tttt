@@ -1,9 +1,30 @@
 this is file demo
 
-
-Parameterizing Inference Year and Vintage Month While debugging, the discussion shifts to the code logic, specifically how the inference_year and vintage_month are dynamically calculated
-. A speaker points out that the current logic extracts the year "2025" directly from the joblib file string using an inference_year - 1 calculation
-. They warn that this hardcoded extraction might cause issues if they ever want to train models on historical past years (like 2024)
-. They debate whether to extract the year from the maximum month ID of the transformed dataset or just use a current_year - 1 logic
-. Ultimately, the team agrees that since they will primarily be training on future data rather than past years, extracting the test year directly from the included_months parameter will work fine for their needs
-. They also note that when the training pipeline is eventually automated, it will likely be set to train data up to two months prior to the current month (current_month - 2)
+Testing Experimental Mode and Active Flags The meeting begins with a speaker demonstrating the script's behavior when running a model in an "experimental" mode
+. They show the configuration table where model metadata is stored and observe that an experimental model is added with an active flag of 0 and a specific start date
+. A speaker clarifies the logic for finalizing models: if the exact same model is re-run and marked as "final", the previously active model (e.g., the 12th row in their table) has its active flag updated to 0, and an end date is appended to its record
+. The newly finalized model is then inserted with an active flag of 1, effectively becoming the active production model
+. Any models marked as experimental are simply filtered out from active inference
+.
+Directory Routing and Renaming Conventions The team then discusses where these model files are physically saved within their storage volumes
+. A speaker outlines an archiving and routing logic that depends strictly on the mode parameter
+. If a script is run in "experimental" mode, the model is only saved to a temporary training directory and is specifically excluded from the configuration table and the production directory
+. Conversely, if the mode is "final," the model is logged in the config table, saved to the production directory, and a backup is simultaneously placed in the temporary training directory
+. Recognizing that an additional update_model parameter in their code is redundant, they agree to remove it and rely entirely on the "final vs. experimental" mode flag
+.
+During this review, a speaker points out a minor architectural mistake: the machine learning pipeline is currently loading its models directly from the temporary local directory instead of the designated production directory
+. To eliminate future confusion, the team decides to officially rename these storage directories
+. The temporary directory (currently local_model_updated) will be renamed to global_models to hold all experimental versions, while the main directory (model_updated) will become production_models
+. A speaker volunteers to write a standard README.md file for both directories so that anyone referencing them knows exactly what they contain
+.
+Natural vs. Custom Inference Logic The conversation shifts to how the system will select the correct historical model during the inference (prediction) phase
+. They structure the logic into two distinct paths based on a trigger flag: "natural inference" and "custom inference"
+.
+For "natural" inference, the system automatically fetches the active model based on the current inference year (current year minus one), simply filtering for an active indicator of 1
+.
+However, "custom" inference requires more complex logic. When a user manually uploads a file for a specific past or future month (referred to as the "vintage month"), the script must dynamically extract the year and month directly from the file
+. A speaker explains the step-by-step filtering process: the script will first use a wildcard to fetch all models matching the extracted year
+. Next, it will check the month ID and select the model trained up to the month strictly less than the requested vintage month (for example, if predicting for March 2026, it must select a model trained only up to February 2026, which would have an _02 suffix)
+. Finally, if multiple versions of that specific month's model exist (e.g., if it was retrained multiple times), the script will use the start_date or timestamp to select the absolute latest iteration
+.
+To account for variations in model naming (such as a generic 2024.joblib file versus a specific 2025_01.joblib file), the team agrees to implement Regex and string-length checks to ensure the system dynamically reads the file names correctly
