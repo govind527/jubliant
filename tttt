@@ -1,30 +1,44 @@
-this is file demo
 
-Testing Experimental Mode and Active Flags The meeting begins with a speaker demonstrating the script's behavior when running a model in an "experimental" mode
-. They show the configuration table where model metadata is stored and observe that an experimental model is added with an active flag of 0 and a specific start date
-. A speaker clarifies the logic for finalizing models: if the exact same model is re-run and marked as "final", the previously active model (e.g., the 12th row in their table) has its active flag updated to 0, and an end date is appended to its record
-. The newly finalized model is then inserted with an active flag of 1, effectively becoming the active production model
-. Any models marked as experimental are simply filtered out from active inference
-.
-Directory Routing and Renaming Conventions The team then discusses where these model files are physically saved within their storage volumes
-. A speaker outlines an archiving and routing logic that depends strictly on the mode parameter
-. If a script is run in "experimental" mode, the model is only saved to a temporary training directory and is specifically excluded from the configuration table and the production directory
-. Conversely, if the mode is "final," the model is logged in the config table, saved to the production directory, and a backup is simultaneously placed in the temporary training directory
-. Recognizing that an additional update_model parameter in their code is redundant, they agree to remove it and rely entirely on the "final vs. experimental" mode flag
-.
-During this review, a speaker points out a minor architectural mistake: the machine learning pipeline is currently loading its models directly from the temporary local directory instead of the designated production directory
-. To eliminate future confusion, the team decides to officially rename these storage directories
-. The temporary directory (currently local_model_updated) will be renamed to global_models to hold all experimental versions, while the main directory (model_updated) will become production_models
-. A speaker volunteers to write a standard README.md file for both directories so that anyone referencing them knows exactly what they contain
-.
-Natural vs. Custom Inference Logic The conversation shifts to how the system will select the correct historical model during the inference (prediction) phase
-. They structure the logic into two distinct paths based on a trigger flag: "natural inference" and "custom inference"
-.
-For "natural" inference, the system automatically fetches the active model based on the current inference year (current year minus one), simply filtering for an active indicator of 1
-.
-However, "custom" inference requires more complex logic. When a user manually uploads a file for a specific past or future month (referred to as the "vintage month"), the script must dynamically extract the year and month directly from the file
-. A speaker explains the step-by-step filtering process: the script will first use a wildcard to fetch all models matching the extracted year
-. Next, it will check the month ID and select the model trained up to the month strictly less than the requested vintage month (for example, if predicting for March 2026, it must select a model trained only up to February 2026, which would have an _02 suffix)
-. Finally, if multiple versions of that specific month's model exist (e.g., if it was retrained multiple times), the script will use the start_date or timestamp to select the absolute latest iteration
-.
-To account for variations in model naming (such as a generic 2024.joblib file versus a specific 2025_01.joblib file), the team agrees to implement Regex and string-length checks to ensure the system dynamically reads the file names correctly
+**Speaker:** I've got some work. Okay, regarding this AI summary, we discussed this yesterday and fixed some things. I will show it to you once. If you look now, we have run a new summary for only one month, the month of May. Here you will see "full year model forecast." Previously, it only showed "forecast," so it wasn't clear if it was an FPA forecast or a model forecast, so we explicitly wrote "model forecast". The problem we are facing right now is with the quarters because we aren't passing any logic for the quarters yet. 
+
+**Speaker:** Along with the monthly data, which we have been asked to remove, let's assume we are currently in May 2025. We have received the prediction from the model for this. Since the current month is May 2025, the comparison we are making right now (the +20.9%) is against the forecast value of May 2024. However, in an ideal situation, we should be comparing it with the actuals.
+
+**Speaker:** Wait a minute. Actually, comparing it with a forecast is useless; we should do it with the actuals. For example, the forecast is 172 million, compared to April 2025, where the actual was 170.6 million. 
+
+**Speaker:** Yes, that one is actual. But when we are in May, we are essentially making predictions. If we compare the backend data with the Year-over-Year May month, it will still be a forecast value.
+
+**Speaker:** No, our year for 2024 is already complete. The user should be able to see the summary for any month. May 2025 has passed, but we generated data from March 2025 using model predictions. 
+
+**Speaker:** Don't use model predictions for comparison. **Model predictions have no certainty; it's like comparing one "maybe" with another "maybe"**. To have a fair picture of the deviation, we have to compare the model's summary generation against the actuals. Comparing a forecast with another forecast introduces an error value and won't give a clear picture. FPA forecasted this value.
+
+**Speaker:** Exactly, you should compare it with the actual values because they have already occurred. If we are looking at May 2025, our model predicted the year-end. If we look at YoY growth, we go to May 2024. For 2025, January to April is actual, and May to December is a prediction, but for 2024, we have all the actuals.
+
+**Speaker:** Comparing predictions with actuals will be factually correct rather than predicting. 
+
+**Speaker:** Understood. Now, what do we do about the quarter? For instance, if we are forecasting for May, it's only two months into the quarter. The quarter isn't complete yet, so should we take a quarterly average or a total sum?
+
+**Speaker:** Total sum. But if the quarter isn't complete, don't consider it a completed quarter. You can compare Year-to-Date or Quarter-to-Date. We are generating monthly predictions, including the current month and the rest of the year, so we can sum them up to make a quarter.
+
+**Speaker:** Okay, let's do it that way. We can calculate last quarter's revenue since we have the data. **The current quarter will be a running sum**. For example, in Q2, March actual, January actual, etc., are available. Then we add the predictions for May and June to get the quarter's forecast. We can then compare that running forecast with Q1's actuals.
+
+**Speaker:** Let's add a column in the transform table for the sum of the last quarter's actuals. Then, add another column for the current quarter after the results. The current quarter will be a running total including both actuals and model predictions, but that won't go into the transform table since our history table doesn't have a prediction column.
+
+**Speaker:** Exactly. For example, if we are in Q2 (May 2025), Q1 (Jan, Feb, March) actuals will go into the transform table. Then we get the model prediction for May and June, take the actual for April, sum it up, and store it in the output result table.
+
+**Speaker:** Should we compare the current quarter with the last quarter, or the same quarter from the last year?
+
+**Speaker:** Both. We will need to create and ingest the quarterly data. Take the Q1, Q2, Q3, and Q4 values for last year and this year, and see if they are actualized or forecasted. History data is always actuals; comparing with forecasts is useless and returns an error term. **Always use "Predicted minus Actual is Delta"**. 
+
+**Speaker:** Will we need to make backend data changes?
+
+**Speaker:** Yes, the logic will change for the final data. Historical data must keep the quarter sum. But for the prediction output table, we might need to add a column or use logic to get the quarterly values from the current predictions.
+
+**Speaker:** Okay, we will work on the logic. Once the summary issue is fixed, we are sorted for the weekend demo to the leadership. We'll need to rerun this for all months. Let me know if you need supporting data from my end.
+
+**Speaker:** **Who is doing the manual data validation and spot-checking** to ensure metrics like 10.9% YoY growth are accurate?
+
+**Speaker:** I will do it. I'll check a few more months today. It would be a bad impression if leadership figures out errors during the demo. As developers, we check while building, but please do a final validation from your side.
+
+**Speaker:** We should sit in a session to verify the model forecasts. If the data is wrong, either the prompt is wrong, or the wrong value is being passed.
+
+**Speaker:** Also, the model prediction seed values will always vary, so that can't be fixed right away; we'll look at that later. For today, just add the quarterly data. Wait, don't change anything today. I'm working on the Responsible AI part, don't write too much story, just submit the job.
