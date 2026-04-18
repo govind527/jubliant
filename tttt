@@ -1,27 +1,4 @@
 note
 :
+ . 
 
-The new min-max range calculation logic introduces a time-based penalty to account for the growing uncertainty of future predictions. This represents a shift from a flat, linear error margin to a model that factors in **auto-regression**, where the output of one month acts as the input for the next, compounding the error over time.
-
-Here is the detailed breakdown of how the new logic works:
-
-**The Core Formula**
-The new margin of error is calculated using the following formula: 
-**Modified Margin of Error = Z-score * RMSE * √(Time Period)**.
-
-*   **Z-score**: A constant statistical value, which the team identifies as 1.96.
-*   **RMSE (Root Mean Square Error)**: The baseline training error of the model, which is roughly 3.8.
-*   **Base Margin of Error**: Multiplying the Z-score and RMSE gives a baseline margin of error of approximately 7.5 million.
-
-**Applying the Time Period Penalty**
-In the previous logic, the team applied this base margin of error (e.g., +/- 7.5 million) evenly across all future months, resulting in a flat 15 million range that implied they were equally confident about next month as they were about a year into the future. 
-
-The new logic multiplies the base margin of error by the **square root of the time period** to act as a penalty term. 
-*   For the **first predicted month**, the time period is 1. The square root of 1 is 1, so the margin of error remains the base value (Z * RMSE * 1).
-*   For the **second predicted month**, the time period becomes 2. The base margin is multiplied by the square root of 2 (approximately 1.4). This widened range absorbs the compounded error from the previous month.
-*   This iteration continues sequentially (1, 2, 3, etc.) for each subsequent forecasted month.
-
-**Final Calculation and UI Display**
-To find the final min-max range, the updated Modified Margin of Error is added to and subtracted from the point forecast for each respective month. 
-
-Instead of showing this range as a continuous visual band across the chart—which the team felt caused unnecessary confusion—it will only be displayed as a **+/- numerical range on hover** (e.g., "Model Forecast, range +/- X million"). This new min-max range logic must be implemented for both the monthly breakdown and the quarterly data views.
