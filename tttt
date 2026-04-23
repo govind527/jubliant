@@ -1,4 +1,22 @@
 note
 :
+
+Based on the conversation in the "Wednesday, 5_34 pm" file, here are the specific changes that the team discussed and agreed upon:
+
+**1. Revenue Mix Calculation Changes**
+*   **Include Unidentified (NID) Revenue:** The current revenue mix percentages (committed, signed, and pipeline) are being calculated only against those three factors, artificially making them total 100% and hiding the NID portion. The fix is to divide these individual components by the **total forecast number, which includes the NID**, to give an accurate picture. 
+*   **Exclude Actualized Months:** This revenue mix math must only be calculated for the pending (forecast) months. Data from already actualized months (like January through March, if you are in April) should be excluded from this specific calculation.
+*   **Label Update:** The labels for the mix should explicitly say "committed, signed" and "committed and unsigned" instead of just "signed and unsigned".
+
+**2. Commentary and Terminology Clarifications**
+*   **Specific Quarter Names:** The phrase "current quarter" causes confusion because it changes based on the viewing month. It needs to be replaced with the explicit financial quarter name, such as "Q1" or "Q2".
+*   **Specific Month Names:** Similarly, the phrase "recent monthly revenue" is confusing. It should explicitly state the name of the most recently actualized month, like "March revenue".
+*   **Bracketed Definitions for AI Drivers:** AI-generated driver factors in the text need explicit definitions in brackets so leadership understands what they mean. 
+    *   "Revenue momentum" should be followed by "(average revenue run rate of past 3 months)".
+    *   "Prior year baseline" should be followed by something like "(same time last year monthly revenue)".
+*   **Remove "Full Year Outlook":** The bullet point describing the "full year outlook" in the AI summary is redundant because it just restates the model forecast. The team agreed to remove it entirely.
+
+**3. Admin UI Features**
+*   **Enable Manual Editing:** The backend API already has an endpoint that allows an admin to manually edit the AI-generated summary and driver factors, but the UI developers missed integrating it. This edit option needs to be enabled so manual corrections can be made to the commentary if necessary.
  . 
 
