@@ -1,14 +1,2 @@
 note
 :
-Here is a detailed summary of the reporting and dashboard changes the speakers agreed to implement:
-
-*   **Forecast Labeling**: Instead of just putting a month in brackets (e.g., "April"), they will label it specifically as "**[Month] forecast**" (e.g., "April forecast") to clearly indicate which month's forecast is being displayed. 
-*   **Trailing Average Revenue**: Rather than citing a single month for the trailing average (e.g., "March 2026 trailing three-month average"), they decided to **explicitly list the three specific months** involved (e.g., "Jan, Feb, March three-month average revenue") for clearer comparison against the previous year.
-*   **Pipeline Conversion Terminology**: The term "pipeline conversion" will be updated to "**Average conversion probability of weighted pipeline**" because the metric is actually calculating the average probability percentage rather than a strict conversion rate.
-*   **Removing the "Bottom Line"**: The generated "bottom line" commentary will be **removed completely**. It was deemed too subjective and relied on confusing terminology (like "acceleration" or "momentum") that would not be useful to stakeholders. They prefer to let the key data drivers speak for themselves.
-*   **"Planned" vs. "Forecast"**: To avoid confusion with the company's budget, the word "planned" will be changed to "**forecast**" (e.g., changing "100.1 of planned revenue" to "forecast revenue").
-*   **Run Rate Phrasing**: The metric used to track the required revenue left for the rest of the year will be named "**Average monthly revenue run rate in remaining months**".
-*   **Omitted Metrics**: They confirmed that the "**full year projected revenue**" metric is not being used and will not be included in the report.
-
-During the review, they also confirmed that certain existing labels—such as "Prior month actual revenue," "last year's year to date revenue," and using the abbreviation "WTD." for weighted pipeline—were acceptable and did not require any changes.
-
