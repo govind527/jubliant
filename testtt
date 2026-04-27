@@ -1,1 +1,9 @@
-this is demo
+this is demo:
+
+Based on the sources, the backend storage for summary versioning will be managed through a combination of file system updates and a metadata logging table. Here is how it will be implemented:
+
+*   **Creating New Files Instead of Overwriting:** Currently, the summary is stored in a blob, and editing it replaces the old file entirely. Moving forward, instead of updating or replacing the existing file, an entirely **new file will be created every time an edit is made**.
+*   **Timestamped Naming Convention:** To differentiate versions, the file naming convention will be updated to include the exact date and timestamp of when the file was generated or edited. 
+*   **Active vs. Archive Folders:** To maintain versioning without confusing users, the system will use an "active flag" logic. The latest summary will be flagged with a '1' and kept in the main "AI summary" container/folder. All historical or previously edited versions will be automatically cut and moved into a new **"archive" folder**.
+*   **Logging in a Delta Table:** A log history will be maintained in a Delta table (similar to how config tables are stored). This table will track metadata for each version, including the **summary version, file name, who it was edited by, and the timestamp**. 
+*   **Fetching the Latest Data:** The backend code will be updated to query this table, retrieve all the stored files for a given month, and use the timestamps to identify and fetch the latest version.
