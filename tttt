@@ -1,2 +1,211 @@
 note
 :
+
+Here is the overall detailed summary and the absolute, line-by-line, in-depth English transcript for the Friday 1:30 PM file, ensuring no text from the provided data is missed. All names have been carefully anonymized using speaker and team member labels.
+
+### **Overall Detailed Summary**
+
+This meeting is a kickoff and initial data exploration session between a Data Science/Engineering team and a Business Subject Matter Expert (SME) to build an Accounts Receivable (AR) and Gross Currency Hedging Forecasting Model. The data team shares a raw data extract containing nearly 580,000 records per month to analyze which features and historical trends drive client payment defaults. 
+
+The SME points out that the dataset is overly bloated due to the inclusion of irrelevant "Revenue" data and duplicating "bucket" rows. To fix this, the SME advises the team to filter out revenue entirely and focus strictly on Billed and Unbilled AR, which should reduce the working dataset to around 20,000 to 25,000 relevant line items. Key business rules established during the call include the necessity of building the forecasting model at the individual client and invoice level first, before rolling the data up to the currency and entity levels. 
+
+The data team and SME agree that incorporating quarterly credit risk ratings for top clients will be a valuable feature; the data team proposes automating the retrieval of these ratings using an external web scraping engine. Additionally, while business reporting requests monthly forecasts, the SME emphasizes that the model must output weekly forecasts because cash management and fund transfers operate on a weekly basis. 
+
+Finally, the teams debate deployment options for the model's output. The data team suggests using a standalone customizable portal or integrating it into an existing PowerBI dashboard. The SME, however, strongly prefers linking the model directly to Oracle Fusion (the underlying financial system). Doing so will make the model dynamic and real-time, completely avoiding the standard 8-to-12-day reporting delays associated with month-end PowerBI updates. The meeting concludes with the data team agreeing to clean the dataset based on these rules and prepare a "vanilla model" blueprint for their next weekly check-in.
+
+***
+
+### **Full In-Depth Detailed English Transcript**
+
+**Speaker A (Data Science Lead):** Yeah. Uh so I have invited the team who will be working on this uh uh project. Um [Team Member 1] and [Team Member 2] they're on the data science team and [Team Member 3] who will be helping us on the data engineering piece. Okay.
+**Speaker B (Business SME):** Okay. Welcome. So
+**Speaker A:** thank you things. So, uh team has been going through the uh call recording. So, for last few conversations, I have also given them some understanding. So, actually they have few questions which they would like to ask. Okay. For to strengthen their understanding and the second thing is uh [Speaker B] we have pulled the raw data from the dashboard uh which you have given when the data size is quite high. So, we'll just walk you through the data and you can help us with the like right uh set of columns because we uh I mean each file is around 200 MB for every month. So the data like number of records should have close to five lakhs per month. Okay. So we'll walk you through the data. You can tell us which uh columns and rows to ignore or if you have to add any filters on that. So that's the agenda which we have to uh know discuss today. Okay.
+**Speaker B:** Okay. I'm just wondering why kind item that that much data should be there because we have around 7 to 800 open invoice every time. So
+**Speaker C (Data Engineer):** can you just show the data then discuss? We'll we'll start with the data first. Will that will that work?
+**Speaker B:** Okay, sure.
+**Speaker C:** Yeah. So I was just showing you the March data uh for this uh [Entity] there. Yeah. [Entity] this is the air d. You can just let [Speaker B] and know the table name which you have used to pull this data.
+**Speaker A:** All right. Yeah. Yeah. So, this is from uh Enterprise's uh uh data mart. Uh the fact uh table name is fact. Okay. So, they're close to 580 K records. Okay. And this is the entire thing. So, out of this which we understood like uh we have to first put a filter that where we have a exposure where the uh functional um currency and the build currency they are different. So that's the first set of filter we have to apply right and uh then uh the entities that we we discussed there are close to 10 15 entities that's which we are focusing right now apart from that anything else
+**Speaker B:** we just filter on the the head on the first row. And just come on column J the accounts.
+**Speaker C:** Yeah. Mhm.
+**Speaker B:** Just showing the status. This looks like revenue and it has this GL data, extraction data, payment date of cash forecasting basic is the collectible invoices. So for that at the start point at least needs to be the AR agent. This is the leg of it. I think you've used the PBI input for revenue dashboard because this is all revenue.
+**Speaker C:** Okay. So this is not the Did did you use the dashboard which helped you to get the access to three? Yes. Yes. Yeah. So that that data uh customer that data which I have I mean the dashboard is But we actually looking for the raw data. So from there we'll we'll extracting this features. So out of this which we have extended right now I have access but we need we need the underlying raw data. This is a report view right but what uh affects this behavior right? If a if a if a client is defaulting on the payment what are the features driving it and what are the historical trend. So the those features we did. So that's why we're looking for a um a a step before this I mean you can you can correct or add anything.
+**Speaker B:** Okay. No no that that's fine. The source is fine but again do you need the detail of revenue as well? I think the you should focus on the build and unbuild AR the the second and third column and the the fifth the on account
+**Speaker C:** on account. Okay. When uh I guess Actually we have u we have done some calculations that data is also present here. If you have to put the right right uh filter on top of it we can arrive at that number. So maybe this is the like the whole data. Okay. And uh
+**Speaker B:** so table if column a in table flag you can I think in my opinion you should remove part come on that excel seat which you're showing.
+**Speaker C:** Sure. Yeah.
+**Speaker B:** So the table flag so did it show me which source it is picking which table it is picking data here so tuple defer p revenue I think you don't need uh revenue in this so if you just filter out revenue I think everything except revenue
+**Speaker C:** yeah
+**Speaker B:** everything remain the same okay now how much lines are coming now two lines no this is
+**Speaker C:** Right now there are uh 482 for like 80,000
+**Speaker B:** for like that is which is the period I think year date you are taking
+**Speaker C:** for one month
+**Speaker B:** exception no it can't be one month actually filter on the period which column is showing the period gate or the some date month No is coming the historical data as well right from 2018 to
+**Speaker C:** but if the invoice is outstanding from that period the year would still show or maybe on account because I think is
+**Speaker B:** if you remove only revenue then on account be no build un can't be 482,000
+**Speaker C:** but this has I guess on amount RBD deferred everything
+**Speaker B:** because you just filtered out revenue.
+**Speaker C:** Okay.
+**Speaker B:** Is a one month data or it's more than one month. So if you take uh you just filter on the 201819 but maybe it is 21 any previous 18 blanks as well.
+**Speaker C:** No no just filter in this. Yes. Okay. Okay. I guess [Speaker B] is asking us to select only those uh
+**Speaker B:** column month is also there that which particular month right invoice sheet
+**Speaker C:** 18. Yeah. Five.
+**Speaker B:** Okay. So this is okay. It is due to almost 8 9 7 8 7 years and in period when you extract the data uh in filter did you provide any period?
+**Speaker C:** Uh yes the date ID filter the first column
+**Speaker B:** first column
+**Speaker C:** this is only the one date that is of March
+**Speaker B:** for all nine item it is March 5th
+**Speaker C:** correct similarly we have uh file for Feb and each month
+**Speaker B:** so this is furious for March only right
+**Speaker C:** correct yeah
+**Speaker A:** correct yeah the event has pulled the data for last 15 months starting from 25th January say 3rd of uh Sorry, March of 26. So like all the files has the right hand and he has taken all all the columns from this and we can get rid of some some of the columns.
+**Speaker B:** Show that how much is coming is coming build amount in
+**Speaker C:** Yes. Sure. Sure.
+**Speaker B:** Is it like fix filter? Should it
+**Speaker C:** this one column is the the build a build air column is in uh is right right side. Scroll to the right. He even Okay. Building build up. Huh? Build a column is column.
+**Speaker B:** Yeah. Right.
+**Speaker C:** What's the total of this column? 449614. No, no. The some Okay. Some Okay. This is around uh 238 million.
+**Speaker B:** 238K. And what's the unbuilt uh volume? build. It should be around 170 180
+**Speaker C:** 193 193 million 93 million the amount and therefore column should be 5 million
+**Speaker B:** a n column
+**Speaker C:** okay
+**Speaker B:** yes 4.5 million no 44 million
+**Speaker C:** okay for 44 million final next that should be 5 1.1 million
+**Speaker B:** okay amount is coming correct duplicates right uh duplicates uh
+**Speaker C:** uh yes but the those duplicates are something like uh not more than 20% 30% of the reports and they have uh nulls in these factual columns right having data might be the number of row might be good because the uh the line item which have uh value the other other other rows would be blank the other like the um like the uh s value the gun build in that case so I think because of format you pull that data that's why it's so many rows okay so the amount row looks fine if in terms of amount that is looking fine
+**Speaker C:** Okay, no worries. We can shorten it which qualifies for this project. I mean this is the entire D for this month. So the initial would be like where this uh where we have a uh functional currency is different from your build currency. That's the first filter we can put.
+**Speaker B:** No. So this dashboard is in USD only. So
+**Speaker C:** Okay. This is USD. Okay.
+**Speaker B:** Yeah. One column is there but again amount in USD only. So amount that you use.
+**Speaker C:** Okay.
+**Speaker B:** And again if you look the base data I think uh the transaction date either the uh for invoice it will be invoice date then due date that kind of data is is relevant. So like the overdue potential overdue that is you can work out right anyways you will work out when you are developing this model. So that is not required revenue is not required then uh DSO I think you can refer but again DSO I don't know um DSO can be referred at DSO days to can be referred so
+**Speaker C:** yeah invoice invoice date due date and uh extraction date is there days due and bucket is also there
+**Speaker B:** Yes, buckets. So anyways that due date is there. So date you can calculate. So that bucket you can maybe because of bucket that so many lines are coming then soft you can remove potential overdue yeah column A say AC you can remove the base data what you need from your calculation and developing model you can refer rest you can remove.
+**Speaker C:** Okay. Okay. So this data actually looks good and yeah and one filter which you are saying that uh revenue which column
+**Speaker B:** yeah column A a J or maybe the the table the one column was the table flag can remove table flag can remove revenue
+**Speaker C:** revenue. Okay please make a note of this. Yeah, sure. Revenue man, how much you have? Yeah, almost 96,000 revenue. Yeah. 4 4 lakh 82,000. After that also 482,000. Yeah. Mhm.
+**Speaker B:** I think if you remove buckets that also would come down. So it might be that in bucket three more than 365 only few clients are there but again that rows may be for all client then the second bucket maybe 90 to 180 days. Uh all client would be Yeah. So that is the reason I guess you have so many lined.
+**Speaker C:** What should we remove everything?
+**Speaker B:** Just filter on one one bucket more than 182 365.
+**Speaker C:** Okay. So just in build uh only every row have have amount or only few just come on the build a column uh towards right build. And they are um yes a yes yeah so not only the rows which have amount but I think everything is is coming here 01 is also coming right
+**Speaker B:** right that's why zero rows are getting repeated because of this bucket correct you have selected bucket in rows so that's why it's I think if you remove bucket then this data will be trimmed down to only 20 to 25,000 line item only 25.
+**Speaker C:** Okay.
+**Speaker B:** Because we have selected bucket in rows normally that's a that's a uh column in pivot you select this in column.
+**Speaker C:** Okay.
+**Speaker B:** If you remove that
+**Speaker C:** okay
+**Speaker B:** you step ing this data don't uh select this uh bucket now it will not help but when you are extracting powerbi that time you have to do it
+**Speaker C:** I'm removing the duplicates after removing the bucket let's see and one more thing like uh this data uh uh of AI dashboard uh was last refreshed uh was last refreshed in March
+**Speaker B:** in March only. Yes. So now for April uh since the back end earlier the data was pulling from EBS now from fusion. So new dashboard is coming which is linked with fusion. So early next week a mid of next week that will be available.
+**Speaker C:** Okay. April onwards.
+**Speaker B:** Yes. Yes. Okay. The look and form everything is remain same. Only data source will change from EBS to fuse.
+**Speaker C:** Okay. But the same thing will get available on your synapse.
+**Speaker B:** Yeah. Everything.
+**Speaker C:** Okay.
+**Speaker B:** But we have a daily refresh also in PB for aging.
+**Speaker C:** Yeah. That will also be there. So that has refreshed till 2nd of May. 2nd of May data. The daily one has 2nd of May data.
+**Speaker B:** Yeah. And does it work on the unbuild also or no? No. Hu pay monthly data is available but not the daily because if needs to be dynamic that at any point you can see the next 15 months. How We we go about that. First priority is okay basis month and balances the visibility. Then the solution is ready. Ps was developed but not moved to production because of reason started then they stopped. But I think now we can ask them
+**Speaker A:** All right. Um, [Team Member], you're clear on how to pull the data. Any questions?
+**Speaker C:** Uh, once that data is available on synapse, we can pull it.
+**Speaker A:** Okay. Um, so have you developed this logic that how you based on this data, how you will build that model? If you have any question or any clarification is required, you can.
+**Speaker D (Data Scientist):** Sure. Sure. Like right now we are exploring doing the data side uh we're understanding the data and building the domain knowledge before we kick on this uh know uh model building process. So we have this uh few questions lined up by the team. Okay. So let them ask um post that we'll start start building the model.
+**Speaker B:** Okay.
+**Speaker A:** Yeah. I please.
+**Speaker D:** Yes. Uh so from our understanding uh from a POV problem statement uh the first thing we need to do is uh basing the entity and the billing currency we need to predict how much is going to come onto the account. Correct? That is the first correct
+**Speaker B:** right and next we going to predict is from a table like uh let's say we have the corwell health something right etc. So within how many days like we will bucketize each of the clients into you know multiple not multiple buckets we will basically classify whether this client is going to pay within the next 30 days or within uh the 30 days after that or 90 days etc. Right? The buckets which we showed just now in the data that uh one within credit period or unbuild and the 1 to 30 then 31 to 60 etc. Is that so? Yeah. But uh uh to build the solution at an entity or currency level you have to build it at a client level first. So the second part should be the first step and once you build that at a client level then only you can because entity and currency level is just sum up right whatever forecast we are doing at the client level so should be the client should be
+**Speaker D:** correct so we'll build at the client level first then the currency then goes the entity I mean it's kind of yeah that hierarchy yeah understood
+**Speaker B:** and uh that uh the data here data what we have provided this will help you to figure out that for what is the collection behavior of a particular client if one client is is outstanding is not there in any of the bucket everything is current means that they are paying within the credit period or few day after credit period so that will help you to understand the client behavior payment behavior and based on that you can build that model
+**Speaker D:** okay yeah and Uh [Speaker B] on this topic I have a question. Does the billing amount okay is uh has a correlation with the payment behavior that if the billing amount is more that the client takes more days to repay. Have you have you seen like this?
+**Speaker B:** Yeah. For few client yes uh is
+**Speaker D:** right because the magnitude of this uh you know invoice depends.
+**Speaker B:** Yeah. But the that proportion of that kind of client is is low. So yeah.
+**Speaker D:** Okay. But still big client big invoice value normally for a big client what are top 500 companies top 10 companies in that sector normally they pay if everything is fine in with the invoice normally they pay. Got it. Okay.
+**Speaker B:** So again for this you have to bucket bucketize client into the their nature of few might be small company startups few fintech. So their behavior is different. What we have seen in the B big client another uh element would be their area of business the dominant operations normally energy based business their pattern is more or less fixed so they pay on time but other the project living work um there could be delay because uh the to some extent is related to the outcome the result what we are providing right so if let's say they're building a model if that is not success full finally and customer is not satisfied with the outcome. So they may hold that invoice for some time. So the project kind of work so as due label that that will give you idea. So every SD service plan label there is a different uh payment behavior and because of nature of work nature of service we are providing.
+**Speaker D:** Understood. Okay. And when you say it's a large company uh maybe you're talking about the market cap. Can we get that information? somewhere in this in
+**Speaker B:** this we are not capturing this but we have the credit rating we do the one credit risk assessment for each client. So for top 80 client we have the credit rating.
+**Speaker D:** So okay can you share that? Yeah.
+**Speaker B:** Yeah.
+**Speaker D:** That would be yeah one feature for this model.
+**Speaker B:** Yeah
+**Speaker D:** right. Yeah sure please go ahead. Yeah and this uh credit rating is it constant or it keeps on changing some ex after extation. So what is the refresh rate for that?
+**Speaker B:** So we refresh it every quarter. Uh but what we have experienced that there is not much change except few client more or less the rating remains stable but that assessment we do have recorded.
+**Speaker D:** Okay. So we have to pull that data if we use that for our Okay.
+**Speaker A:** Okay. So in this model if you can build something that every quarter for our client list if we get the uh credit rating from top credit rating agency uh without manually searching for for individual client that will also be helpful.
+**Speaker B:** Okay. So right now this is manually maintained.
+**Speaker A:** That is manually maintained.
+**Speaker B:** Okay. Yeah.
+**Speaker A:** Yeah. Actually yeah we have a engine which can scrape this external uh sources to get information. Yeah.
+**Speaker B:** Yeah. Yeah. addition is there.
+**Speaker A:** Okay.
+**Speaker D:** Okay. Uh the next question is do we have to deal with data at invoice level or it's just client level and rolled up to further entity and the billing currency level.
+**Speaker B:** No no at a invoice level because collection will happen at a invoice level and invoice uh maybe from particular business areas. So so everything will be at a invoice table because you have a due date, payment term, everything at invoice table. So without this it will be difficult you to work any model because new data will come in in form of invoice collection will happen for invoice. So that is the the kind of a base.
+**Speaker D:** Okay. So it's expected that we focused at a invoice level and then do to client yourself.
+**Speaker B:** Yes. Yes. Yes. So check that what's the customer behavior. You have to just look that invoice collection pattern or over invoice pattern of last one or two year. So that assessment have to be done at a invoice level.
+**Speaker D:** Okay. And uh can a invoice be like paid partially like for example in general when we talk about our expenses There is option of EMI as well. So is there anything as such or
+**Speaker B:** very very different?
+**Speaker D:** Okay. Okay. All right. And uh whatever buckets we are trying to classify each of the clients behavior into they will come from that bucket column that was was just showing on that Excel right those within credit period or you have any predefined sets of buckets.
+**Speaker B:** No. that uh the major criteria that outstanding pattern. So that will indicate that how they are paying.
+**Speaker D:** Okay. Actually there are a lot of buckets as like 30, 45, 40 to 50 a lot of. Do you have anything standardized?
+**Speaker B:** So normally 0 to 30 then 30 to 60 but it just depend that sometime you want to um monitor very minutely. Then we start 0 to 15 or 15 to 30 but normally 0 to 30 30 to 60 60 to 90 then 90 to 180 that then 180 to 360 and above 360. So that's a standard if you look at reporting here what I have shared with you that's a standard is
+**Speaker D:** okay then yeah we'll we'll follow that that standard. Yeah. And uh [Speaker B] we do we have some cut off like uh you had shared the March data right? So the invoicing are they having some cut off date like the date until which the invoices are included or uh it's by default until the end of that month
+**Speaker B:** if report is this end of 31st March. So all the transaction till that that date will be considered.
+**Speaker D:** Okay. the day we pull the report.
+**Speaker B:** Yes. Yes. So if you're pulling for 31st March or the transaction uh process and accounted for till that date will be part of that report.
+**Speaker D:** Okay. And uh what happens let's say until the end of the month let's say there is a account closing day right let's say right now it's a May and uh on the 31st of May is a holiday. So how the date it goes off or it entirely depends. You can also do until 30th of May.
+**Speaker B:** No. So you're saying that last working days is off then. Right.
+**Speaker D:** Correct. Correct. Right.
+**Speaker B:** So what about the last business day transition from there but again if someone approve the invoice on on on the holiday last days already that will also come. So for financial system there is no kind of of whatever date you will approve it will picked automatically.
+**Speaker D:** Okay. Got it. All right. So it depends like whichever is the business day or the approval that will be the last. Okay.
+**Speaker B:** Right.
+**Speaker D:** And uh what is the frequency of forecasting we are expecting here? Will it be a monthly or weekly or
+**Speaker B:** what? Yeah. Normally they they translate into the weekly forecast. They asked monthly but they asked the the weekly and the sum up to get the month forecast but all the fund transfer and cash management happening on a weekly basis. So that's why they they need weekly and weekly is not that uniform first month low and the second month is bit high and third week is a top most collection week and fourth let low and quarter and the fourth week of month would be the highest. collection. So since week is not that that straightforward or a straight length, so weekly would be the best option.
+**Speaker D:** Okay, perfect.
+**Speaker A:** Okay. Uh anything from the point of invo in invoicing and others go do you have any queries until now or we got invoicing and frequency and
+**Speaker C:** um uh Mostly there is no partial like a partial payment here. Let's suppose if there is any uh invoice. So do we any kind to kind of any kind of transaction in multiple uh transes or not?
+**Speaker B:** The cases are there but not that much limited cases normally either invoice will paid fully or not.
+**Speaker C:** So invoice is a unique idea we can say that.
+**Speaker B:** Yes. This is a unique ID.
+**Speaker C:** Okay.
+**Speaker B:** The system generated number which is unique and this is a global series. So irrespective of entity if you develop you will get a number in sequence.
+**Speaker C:** Okay. I have one question related to entities. Let's suppose there is one entity uh which is located in Ireland. Okay. Historically uh which the billing currency was let's suppose um USD. Now it is changed to uh uh uh GBP. So is there any entity exist?
+**Speaker B:** Sorry that didn't get
+**Speaker C:** uh are there any instances that entity changes its functional currency?
+**Speaker B:** Yeah. So functional so every entity have a reported currency and functional currency in the like the for Ireland the the reporting currency is USD but you can can raise invoice in any currency. So when you check the island invoice you will find that invoices would be euro GBP is to AUD invoice also. So there is no restriction from any any entity you can raise invoice in any currency.
+**Speaker C:** Got it. Okay. So we can ignore this. Yeah.
+**Speaker B:** Yeah. Yeah. Okay. There would be the impact of forex conversion everything but as such there is no restriction.
+**Speaker C:** Got it. Yeah. Thanks. Thanks. [Speaker B].
+**Speaker D:** Okay. And [Speaker B], is there any chance of update to the data? Like we have some invoicing data extracted for the month of March. Correct. But coming in April, uh you guys figured out there is some change that needed. So is that a scenario possible?
+**Speaker B:** The dashboard remains same. So in the similar way you can build that header for a print as uh for a print. Yeah. But retrospectively we don't go and uh do any modifications in the historical data. No, we don't do so once in data migrate to dashboard is this is you cannot make any change in password.
+**Speaker D:** Got it. Okay. Go ahead.
+**Speaker A:** Lot of questions I see.
+**Speaker D:** Yeah. Can we can you continue? Can we? Yeah. Uh How much how much more questions do you have which uh actually a lot.
+**Speaker A:** Okay. Uh yeah [Speaker B] if you want we can continue or uh we'll we'll set up a follow-up call at least for this questions.
+**Speaker B:** No. So you know that do one thing that since you're you cleaned this data up so that it will make more meaningful sense for you then work around it then come up with a question and you can just ping me and next week then we can space because the data you have nowadays is not in the form where you can do any analysis and come up with some
+**Speaker A:** right we need to work on this data and I will I will connect with you right yeah on this uh questions okay and uh uh I have set up a weekly connect that is on Thursdays does the time work or do we do you prefer any other time it's fine no it's fine uh 3:30 to 4 does that work together for youra I think for me it works. Yeah. If there are any of us will be there in that call. So that should be fine. Okay. Fine. Then I have set up a recurring uh meet for next 3 months at least. So yeah, let's meet around that time every week and uh before that we'll connect with you once. Okay. Once we clean up the data and with so by in the next meeting uh next we'll have a vanilla model. that will at least do some forecast. Uh we'll we'll take your inputs on that. So that's the plan.
+**Speaker B:** Yeah. And what we can do is in that blueprint when you prepare for the you know proposed solution the data inputs and what's your you know how you're looking at those data points that is something you must capture so that we can validate that we are on same page in terms of data understanding everything flows from there right. So
+**Speaker A:** absolutely yeah yeah so is like the vanilla model output will go into this blueprint uh right so there we can give a sign of okay this is this is what is required and this is your acceptance criteria
+**Speaker B:** this is the tolerance level everything and as I had said that you know one there will be data points which will flow from the seeded reports like aging unbuild if you're doing a 3 month forecasting then this is the forecast on sales which will come from revenue forecast of FPNA but then there will be some nuances where we have some level of disputes or clients are chapter 11 which will we know that it will delay the payments or impact the payments. So those kind of inputs also you would have to give us a placeholder to capture right so how how do we normally go about them
+**Speaker A:** yeah it's there in the plan but we need to know understand that uh in a in a in a in detail before we
+**Speaker B:** yeah the business case which I've shared that has some level of detailing around this. So maybe
+**Speaker A:** correct correct think that when you're building the blueprint
+**Speaker B:** okay because there there is this solution this model will be in power vi or some other platform.
+**Speaker A:** No uh the output I mean the it would run on either data bricks or on standalone VM. Okay. Uh the output would uh be in the form of a table that we can fit into the powerway. You You can see the results on a PowerBI as a dashboard or or if you prefer a standalone uh application or a portal that also can be done only pretty dated technology. So uh we're not looking at leveraging claw or something. Yeah. Yeah. Yeah. I mean yes the calculation everything that that will be done using agent but the output should be in a representable format that the business you and your team can view. So for that I was thinking to leverage PowerB only for the dashboarding or the reporting purpose you can see okay for uh for uh for example the the the product which I've built for [Team Member] and [Team Member]'s team so they they preferred a standalone portal so we have built a standalone portal where they can see the reports the charts and dashboards and they can play around it so if you if you prefer that way that also can be done or if you want to integrate the output in your existing power dashboard that also can be can be done that is actually much easier rather than building uh you know um new application. I can I can just show you uh the way we have done for uh arc. Have you uh have you seen that?
+**Speaker B:** Uh not really. So maybe you can share the link and we can have a look at that.
+**Speaker A:** Actually that's a that is a restricted access one. Okay. So
+**Speaker B:** okay. So who can get the this? I can check with cutting.
+**Speaker A:** Yeah, it's it's just a like dashboard page which I'm just sharing on my on my screen. So this is the forecasting model for EXL. Okay. So so it gives this is the business forecast. This is the model forecast and uh how much are we okay and this is the executive summary on on the on the bottom and on the dashboard page you will see that uh okay where do we stand? What what are our guidance and what is the monthly breakup, the quarterly breakup and so on. So this is a standalone and thing which we are building for them and if you want to integrate this charts and all everything in the PowerB dashboard that's also can be done but of course as you said
+**Speaker B:** and how how about the drill downs does this standalone give the drill down also?
+**Speaker A:** Yes. Yeah. Actually this is much more customizable. I mean you can edit things you can do we can know customize things the way you want to see that can that we can do but that thing is with you on this.
+**Speaker B:** Yes. Yes. Let me have a word with him. I think we'll also go with the standalone most probably. But uh let me have a word with him. And what's the benefit of you know your picking data source from PowerBI visav Oracle PowerBI even uh that's well integrated within our enterprise uh uh ecosystem. So that is uh much more convenient like to tap onto synapse and PowerBI thing that is much more easier rather than going into a Oracle connector. I mean that's doable but the one which which you are seeing now this is like a tightly coupled with our enterprise uh BIE tables synapse tables and
+**Speaker A:** both are both yeah both are doable but this is what we have done.
+**Speaker B:** Okay. Okay. We'll internally discuss which is the right data source from you for you. PowerBI is something which can be explored but And I I think it has its own challenges in terms of uh if there are issues then even we struggle to work with the team to get those resolved. So that's why I was thinking that I don't if we are building this from the scratch why not link it to the Oracle fusion itself so that it can take the feed one that will make it more dynamic and two that dependency on PowerBI will not impact this output
+**Speaker A:** correct okay and the data becomes available on the Oracle fusion first right and then more fusion so then that delay can be avoided okay
+**Speaker B:** delay can be avoided this can be more real time and then there there could be iterations which can be tracked across the month rather than waiting till month end because a large part of TVI data gets updated at month and post month close around 8th 9th
+**Speaker A:** right right
+**Speaker B:** till 12th but that impact the reporting timelines. So definitely it will dynamic if it is linked to fusion.
+**Speaker A:** I see I see I I I get open because there's the problem in we are facing for this revenue forecasting. We have to wait until the month end data becomes available in the main schema then from there only we'll pull it
+**Speaker B:** totally. Yeah.
+**Speaker A:** Yeah.
+**Speaker B:** Yeah. Makes sense. And In the meantime for any tactical questions which you have that you may talk to either [Speaker B] or myself.
+**Speaker A:** Okay. And uh anyone from your team who can help or understanding if you have to spend more time I know [Speaker B] is like uh might not be available every time but anyone from your teams?
+**Speaker B:** Yeah I have two names [Team Member 1] and [Team Member 2]. Yes. Okay, we can connect with them. Okay, that whoever is available uh we can connect.
+**Speaker A:** Thanks [Speaker B] for this. Thanks everyone. Thanks everyone. Thanks everyone. Thanks for your time.
