@@ -1,1 +1,180 @@
 notee:
+ enriching the model with external financial data for their clients
+. One team member is tasked with building an automated AI agent to fetch external metrics like Market Cap, Earnings Per Share (EPS), Quarterly Revenue, YoY Growth, and Industry Sector
+. They explicitly agree to use free, open-source APIs for this data extraction rather than web scraping, which is flagged as a banned activity
+
+
+
+ Second thing is external.
+ What does this client do and how much...
+ Speaker C: Market, yes, meaning the market share, we can call it that.
+ Speaker A: Yes.
+ Contribution. Anything, anything.
+ How is their balance sheet?
+ Speaker B: So for this... where will we get this from? Like an external client, suppose CNA, okay? Now the internal data must be lying around, but external businesses or...
+ Speaker A: This is lying around.
+ Speaker B: Like the internal one must be lying around, for CNA's, hmm...
+ Speaker A: Let me tell you, tell me any one client, tell me.
+ CNA and any other reputed one.
+ Speaker B: Yes, reputed one.
+ Speaker A: I will check this.
+ One second.
+ CSF, CVS.
+ Okay, NFL is also here.
+ Every client, these are public, in which they are supposed to share our earnings call which was public disclosure...
+ Speaker B: Yes.
+ Speaker A: We will get it, one...
+ Speaker C: Yes, if that doesn't happen, then what we can do... okay.
+ Speaker A: I have done external data extraction like this using MCP.
+ Help from many servers, APIs, okay.
+ Suppose look, save the latest updated reports of Q4 or T2 25, their dates.
+ Okay, this Revenue, EPS (Earnings Per Share), this match...
+ Speaker B: Oh, okay, I'll start, okay.
+ Speaker A: Hmm, this is the guidance.
+ Speaker B: Hmm.
+ Speaker A: Okay. What are the operational variances in this?
+ We can add some Agent tip touch.
+ You can see it, right?
+ This is the sub zone 10.
+ So the model based on this cut-off date, this is the...
+ So what you have to do is, give this thing all these account names, sent.
+ How much are its market caps? Okay.
+ What are the market shares in which... any earnings growth, how much is it, like...
+ And we can see if they... how they have grown in the last quarter or last two quarters, what is the momentum?
+ If that is impacting our... like our momentum was there, revenue...
+ Speaker C: Hmm, hmm, hmm, financial credit and debit, we can extract all things for each other account.
+ Speaker A: Yes, meaning don't go too deep.
+ Okay.
+ Speaker C: Okay.
+ Speaker A: Meaning don't do their full technical analysis.
+ Like how much is the year-over growth? This is the...
+ Speaker C: Yes. This is the revenue and this is the market cap. EPS, you can take this like that.
+ Speaker A: Hmm, year-over, month-over-month won't happen.
+ Quarter on quarter, how much was it last year, if that is impacting...
+ Speaker C: Right.
+ Speaker A: Okay?
+ Of course, I mean we have fewer features, but we can add more to it, let's see, I will try.
+ So you segregate the work between you and Speaker C, what all needs to be done.
+ You give the format, go date and this and this format...
+ Speaker B: Okay, fine.
+ Speaker A: Take more edits.
+ Okay I'll just give a random query.
+ Okay my Claude is open only... red extra... it's just loading in the browser.
+ Speaker B: In the browser... I will try.
+ Speaker A: In the browser.
+ Brother Speaker C, don't take this piece external.
+ Speaker B: Okay, I will create a table.
+ Okay, based on all that account...
+ Speaker A: I need times until you do this.
+ So initial progress, then you can take time.
+ Okay?
+ Meaning at least... give me this table made for at least five clients.
+ Okay?
+ Should I give it to you by Monday... all of it on Monday.
+ Okay. You set up a call and I need not follow.
+ You set up a call. That is the data.
+ Okay. I will do the pipeline.
+ Okay.
+ Speaker C: When should I do it? By one.
+ Speaker A: No, no, by Monday, Monday.
+ Speaker C: Monday right, if you need time until Wednesday, tell Wednesday but work is there.
+ Speaker A: No, no, I will do it by Monday...
+ Speaker C: Time.
+ Speaker A: Okay. So those are the factors affecting AR combining first business.
+ Per connection, fixed payout connection.
+ Major unbilled receivable necessary already rendered except for physical invoicing and passage of time...
+ Speaker C: Customer... yes customer credit risk and bank...
+ Speaker A: This is one factor.
+ Speaker B: Oh, so this credit risk, everything will come in that only, so...
+ Speaker A: I don't know how you do...
+ Speaker B: Hmm.
+ Speaker A: This is a one factor you can take into account, customer credit.
+ So Speaker D, you work on building on that model, vanilla model, okay.
+ Hmm.
+ And you, you maintain the consolidated feature store, okay.
+ Speaker D: Okay, fine, internal external...
+ Speaker A: External, external, external...
+ Speaker C will work on the external.
+ Whatever date you need from an external source, let him do this system so he will get hands-on experience on the agentic side.
+ Speaker C: Okay.
+ Speaker A: Let him do it, don't help him.
+ Speaker D: Okay, fine.
+ Speaker A: Okay, let him do it.
+ Speaker C, do your... use your knowledge and research what are the factors, technical analysis...
+ Speaker C: So I need to use agent API for this or not?
+ Speaker A: Yes, of course.
+ Speaker C: Like I need to build some agent reusable code... write this.
+ Okay?
+ If tomorrow... if tomorrow I want to do Google's technical analysis.
+ I should give the name of the company or the ticker of the company, it should give me the present.
+ Speaker B: Hmm, okay.
+ Okay.
+ Speaker A: Reusable code, remember that.
+ Will take a list.
+ A function to take a list of company names.
+ Speaker B: Yes, like an account.
+ Hmm, hmm.
+ Speaker C: Yes, okay, an account is there.
+ It will give its output and the form like...
+ Speaker B: Yeah meaning what is it... meaning what is the profit, what is the gain, what is its quarterly up and down...
+ Speaker A: What I just showed here.
+ Speaker C: Hmm, how much is the revenue, write it down, write down revenue first.
+ Just a second.
+ Speaker A: Revenue, Market Cap, those are the basic things you can take more in.
+ Whatever is not there... Revenue, Market Cap.
+ Speaker C: Revenue standard... not like one is in billions, another is in millions.
+ Speaker A: Okay, you can use absolute numbers too.
+ Okay.
+ Speaker C: Hmm. Understood.
+ Yes.
+ Speaker A: Sir ji...
+ Speaker C: Revenue.
+ Speaker A: Market Cap, okay.
+ Speaker C: Hmm.
+ Speaker A: Performance clear year over year... look here, it is up, it is down, 7.8% where is it going? It's going up.
+ So that you should define.
+ Okay?
+ Speaker C: Yes.
+ Speaker A: EPS. EPS Earnings Per Share. Adjusted EPS.
+ Okay. Operating Cash Flow.
+ Okay. Quarter... last three quarters' revenue... you can also take this.
+ Speaker C: Okay.
+ Speaker A: This is... this is yearly revenue.
+ Quarterly... you can take revenue too.
+ Okay.
+ Speaker C: Okay.
+ Speaker A: Suppose I do one more.
+ Okay I have call... all it started... okay my date, so by Monday we can show some initial things.
+ The model thing... meaning it will be done.
+ Okay?
+ Because the final data will have to be set.
+ Master date...
+ Speaker C: Okay?
+ Speaker B: So okay. I am also working on this.
+ Okay.
+ The external thing, okay, Speaker C.
+ I have tagged the team members with this, with the expected date.
+ Speaker C: Okay.
+ Speaker A: Okay.
+ Speaker B: Should I send more queries? Or it should be for our own... yeah query...
+ Those filters... filters if anything...
+ Speaker C: Okay, fine.
+ Speaker B: Just say not the exact query, tell them we used this query, that also... no okay, let them ask.
+ Speaker A: Okay, looks like the call got cancelled, nobody on the call.
+ Okay then, let's meet on Monday, to validate the date and go and let me know if you need anything.
+ Speaker C: Yes, I need to use this model right... meaning the GPT one I have is actually the old one.
+ Speaker A: Then use that one.
+ Speaker C: Okay, okay, I will use that one.
+ Speaker A: Use 4o.
+ Speaker C: Yes, okay.
+ Speaker A: Check it out, and see what data the model picks up, there is also a cut-off date for this, right.
+ Speaker C: Hmm.
+ Speaker A: Yes, that too.
+ Speaker C: Correct.
+ Speaker A: If that happens, that affects it, or else if you want to use any news API... how you can extract sources...
+ Speaker C: Okay, okay, I'll see.
+ Speaker A: Otherwise ChatGPT is there, just ask.
+ Speaker C: Can't we pick up some websites, okay, where these dates... we do scraping etc., don't do that, just...
+ If someone is providing a free API... meaning providing it, then we can use theirs, an open source API.
+ Speaker A: Correct, web crawling, scraping, don't do that, there is a banned activity.
+ Speaker C: I will use free open source APIs.
