@@ -1,1 +1,112 @@
-demo::
+
+
+*   **Revenue Pipeline & Process Flow:** The team outlined the end-to-end lifecycle: FP&A completes forecasting in the last week of the month, actual revenues are reported in the first week of the following month, invoices are generated post-finance approval, and finally, the Accounts Receivable (AR) team follows up on collections.
+*   **Hedging and Treasury Requirements:** Hedging is managed by a separate Treasury team. The Treasury team requires monthly AR reports detailing outstanding amounts in **local currencies** (e.g., GBP, Euro) rather than USD, to accurately calculate currency exposure.
+*   **Data Matching Discrepancies:** The team faced significant issues matching forecasted revenue data with the final collection data for specific clients (e.g., American Family Life Insurance). While final receipt amounts matched the sum of project-level payments across different delivery locations, standardizing this data proved difficult despite attempts to map it using taxonomy columns. 
+*   **Data Quality and Duplicate Rows:** The raw extracted data showed discrepancies, such as multiple entity IDs against the same invoice and overlapping extraction dates, causing invoices to be duplicated or triplicated in the consolidated report. 
+*   **Modeling Requirements:** To predict customer payment behavior, the team requires specific historical datapoints: **Invoice Generated Date, Due Date, and Receipt Date**. The current global consolidated report lacks these granular details, necessitating a different report ("Collection Working" report). A key observation is that conversion rates and invoice currencies in some of these reports are currently inputted manually.
+
+*   **Reiteration of Friday's Action Items:** The team was strictly instructed to use the upcoming 4 PM call's chat to chase down the data extraction and validation tasks pending from Friday.
+
+---
+
+### **Key Pain Points Identified**
+1.  **Data Mismatches:** There is a fundamental disconnect in matching the high-level revenue forecasting data to the granular, project-level accounts receivable/receipt data.
+2.  **Raw Data Instability:** The exported datasets require extensive filtering. They contain duplicated lines due to overlapping extraction parameters, and it is unclear which transaction flags (like "Deferred Revenue" or "Unbilled") should be included or excluded for accurate modeling.
+3.  **Missing Features for AI/ML Modeling:** The team cannot build a baseline model for customer payment behavior using the current global report because it lacks vital timeline metrics (Invoice Date and Receipt Date). 
+4.  **Manual Data Entry Risks:** Key fields like conversion rates and invoice currencies are manually plotted into the system reports, posing a risk of human error in the training data.
+5.  **Environment Access Issues:** The Revenue Forecasting VM is currently blocking Graph API access, hindering automated reporting/integration.
+
+---
+
+### **Specific Follow-Ups Required (Based on Friday's Deep-Dive)**
+To move the forecasting model forward, the following action items must be tracked and resolved:
+
+*   **Extract Historical "Collection Working" Data:** Follow up with **K** to extract the historical "Collection Working" reports spanning from **January 2024 to the present date**. This data is critical because it contains the exact Invoice Dates, Due Dates, and Receipt Dates needed to train the baseline behavior model.
+*   **Final Data Validation with G:** N needs to secure a 5-10 minute meeting with **G** to officially validate the raw data filters. Specifically, they must **confirm whether to include or exclude "Deferred Revenue"** and other manual transaction flags, as previous advice on this has been contradictory.
+*   **Resolve Data Duplication Logic:** The team needs to validate the deduplication process. They must confirm exactly how to filter out the invoices that are appearing two or three times in the raw data while ensuring the final calculated sum perfectly matches the Power BI dashboard totals.
+*   **Drill-Down Logic Clarification:** Request a clear explanation of how the data drills down from *Revenue Forecasting* -> *Invoicing* -> *Accounts Receivable* at the data-table level to solve the initial discrepancy where client revenues were not aligning.
+
+
+
+**End-to-End Revenue and Collection Process**
+The team outlined the complete lifecycle of revenue tracking. The process begins with forecasting, which is completed in the last week of the month, followed by reporting the actual revenue in the first week of the subsequent month. Once the finance department approves an invoice, it is generated in the system, and the accounts receivable (AR) team begins following up on collections if the credit period is crossed. 
+
+**Hedging and Currency Conversion Requirements**
+A separate treasury team is responsible for managing hedging and requires monthly AR reports. A major requirement for these reports is that outstanding invoice amounts must be provided in their **local currencies** (such as GBP or Euro) rather than just a converted USD amount. This is because the treasury team needs to understand the exact local currency exposure to manage hedging properly. While the system converts these amounts to USD based on fixed monthly closed reporting exchange rates for calculation purposes, the raw local currency values remain essential.
+
+*
+
+**Data Quality and Model Training Challenges**
+The ultimate goal is to build a baseline model that predicts customer payment behavior—specifically, how many days it takes a customer to pay after an invoice is generated. To accomplish this, the team **critically needs the exact invoice generation dates, due dates, and receipt dates**. However, the current consolidated global report lacks this granularity, forcing the team to rely on a different "Collection Working" report. 
+
+While reviewing the raw data, the team identified several major data quality issues:
+*   **Duplicate Entries:** The raw data contains duplicated or triplicated rows for the same invoice IDs. The team suspects this is because the data was extracted multiple times with overlapping date ranges and summed together. 
+*   **Manual Data Entry Risks:** Certain crucial fields in the collection reports, such as conversion rates and specific invoice currencies, are not automated and are plotted manually into the system.
+*   **Unclear Filtering Rules:** There is ongoing confusion over which transaction flags to include or exclude. For example, previous instructions suggested excluding "Deferred Revenue," but applying that filter resulted in zero values for the Gross AR, making the data unusable.
+
+**Required Follow-Ups**
+To move the forecasting model forward, the team agreed on the following next steps:
+*   **Extract Historical Data:** Team members need to pull the detailed "Collection Working" reports spanning the last two and a half years (from January 2024 to the present) so the data can be joined and used to train the baseline AI model. 
+*   **Data Validation Meeting:** A brief follow-up meeting is strictly required to confirm exactly which table flags (such as "AR" or "Deferred Revenue") should be used.
+*   **Resolve Duplications:** The team must validate the logic used to handle duplicated lines to ensure the final extracted totals accurately match the main Power BI dashboard without overstating values.
+
+
+Here is the overall detailed summary of the Friday meeting, followed by the full, in-depth English translated transcript with all names anonymized as requested. 
+
+### **Overall Detailed Summary of the Friday Meeting**
+The Friday meeting was a technical deep-dive focused on understanding the end-to-end revenue forecasting and collection pipeline to identify the correct datasets for training an AI/ML forecasting model. 
+
+**Key Discussions:**
+*   **End-to-End Flow:** The process begins with FP&A forecasting revenue at the end of the month, followed by reporting actuals. Invoices are then generated upon finance approval, and the Accounts Receivable (AR) team follows up on collections once credit periods are crossed.
+*   **Hedging & Currency:** The Treasury team handles hedging and requires monthly reports showing outstanding AR amounts strictly in their **local currencies** (e.g., GBP, Euro) rather than converted USD. This is essential for understanding actual currency exposure. 
+*   **Data Matching Mismatches:** The technical team found discrepancies trying to match forecasting data with actual final receipt data. While project-level delivery locations could be summed to match final receipt amounts for some clients, standardizing this across the board using taxonomy columns failed. 
+*   **Data Quality Issues:** The raw dataset extracted by the team contains severe duplication issues—the same invoices appear two or three times. The team suspects overlapping date extractions caused this. Furthermore, filtering out specific flags like "Deferred Revenue" resulted in zero values for Gross AR, creating confusion on exactly what data filters to apply.
+*   **Machine Learning Requirements:** To predict customer payment behavior, the model strictly requires granular timeline data: **Invoice Generation Date, Due Date, and Receipt Date**. Since the global consolidated report lacks this, the team identified the "Collection Working" report as the solution. However, it was noted that conversion rates and invoice currencies in this report are manually plotted.
+
+**Action Items:**
+1.  Extract historical data from the "Collection Working" report spanning back to January 2024 to train the baseline model.
+2.  Schedule a brief validation meeting to finalize exactly which transaction flags (e.g., AR, Deferred Revenue) should be included or excluded.
+3.  Investigate and resolve the duplicate row issue to understand why multiple lines sum up to match the correct Power BI dashboard totals.
+
+---
+
+### ** Discusssion**
+
+
+**Spe 6:** Okay, let me start. Before we go to the data, we wanted to understand the end-to-end flow starting from revenue forecasting done by the analysts, to invoicing, to the accounts receivable section, and then fetching. We want to understand the end-to-end process in detail.
+**Spe 7:** Cycle-wise, if we are in mid-May, FP&A must have completed forecasting specific to June in the last week of May based on inputs from the business side. We report the actual revenue for May by the first week of June, compare it with the forecast, and post that, we start invoicing clients. Once finance approves an invoice, a number is generated through the system and starts reflecting in our aging report. Then we start following up once the invoice crosses its credit period. So it's forecasting, actual revenue, invoicing, and then collection.
+**Spe 6:** In an earlier call, we discussed hedging. The amounts we collect in different currencies need to get converted to USD. Is there a further process after it goes to your section?
+**Spe 7:** The hedging part is taken care of by a separate Treasury team.
+**Spe 8:** What goes as an input to the Treasury team? Is it the exposure currency and the amount?
+**Spe 7:** That's correct. Our AR aging report includes invoice-wise amounts in both currencies: the local currency in which we raised the invoice (e.g., GBP) and USD.
+**Spe 8:** Can you show us a historical format for reference?
+**Spe 7:** Not a problem. I'm picking up an invoice for reference. Here the currency is USD. Let's pick something in GBP. This report is created as of May 18th, because aging is on a daily basis. We keep adding invoices to our outstanding list as they are approved, and knock off payments we collect daily.
+**Spe 6:** And the reporting period is daily?
+**Spe 7:** Yes, if it is till May 18th, whatever transactions happened by that date are included. But for hedging purposes, we share it with Treasury only once a month, on the last day of the month. In this column, you see the invoice date (Nov 6) and the invoice currency is GBP. In local currency, this amount remains the same, but the USD amount is converted based on the conversion rate.
+**Spe 6:** On the collection date, is it converted at the closing exchange rate?
+**Spe 7:** Yes, the closed reporting exchange rate. This rate is fixed for the whole month, and then gets changed the next month. So the outstanding amount will change in June because the conversion rate will be different based on the May closing.
+**Spe 6:** So when we do the calculations, we will be doing USD only, right?
+**Spe 7:** That's correct. Reporting currency is USD, so we convert it.
+**Spe 8:** Can someone share the data we were discussing yesterday? The consolidated year-wise collection date.
+**Spe 6:** This is the month-wise data for 2026. This is the date ID, project entity ID, invoice date, GL date, extraction date... This seems to be a combined report.
+**Spe 8:** This is raw data showing AR plus RBD plus on account plus unbilled receivables. What's your question on this report?
+**Spe 6:** Do you use this raw data for calculation?
+**Spe 7:** For hedging purposes, we use the raw unbilled data, raw on-account report, and raw aging report. We have excluded the revenue as discussed earlier. For the report I give to Treasury, I take the transaction currency amount, not the USD converted amount, because the Treasury team requires the amount in local currency. For example, they need to know how much GBP or Euro amount is outstanding. We give it at an entity level.
+**Spe 6:** So to confirm, when an invoice is raised, it's in local currency. At what point does it get converted to USD?
+**Spe 7:** This report is essentially converted because USD is acceptable for all entities.
+**Spe 8:** Just to make sure which data we can use for our model training. We assumed this extensive data could be fit into the model for forecasting.
+**Spe 6:** When I ran it by our colleague, he said we have to put a lot of filters and it's creating confusion.
+**Spe 9:** Yes, we extracted it and asked him to validate. We were told to exclude "Deferred" from the table flag. But when we remove "Deferred", the Gross AR comes out to be zero.
+**Spe 7:** Deferred will have outstanding, so net AR is the opposite of outstanding. I suggest we get a 5-10 minute connection later to get final validation and avoid confusion.
+**Spe 6:** From an understanding perspective, we are clear. But to train a baseline model to predict customer payment behavior (how many days it takes a customer to pay), we need the invoice generation date and the receipt date.
+**Spe 7:** For that, it is always at a client ledger level.
+**Spe 6:** We don't have anything but the consolidated global one.
+**Spe 9:** Actually, there is a collection report that has the invoice number, receipt date, and the client. We only need the invoice date and due date to join it. 
+**Spe 6:** Can you pull this report for the historical years?
+**Spe 7:** I can pull it, but note that the conversion rates and the invoice currencies in that report are manually incorporated from the invoice register, they are not system-generated.
+**Spe 6:** We can pull this report from Jan 2024 to date and share it, we will join and prepare the data.
+**Spe 9:** There are a lot of filters to apply, plus duplicate lines. The same report seems to have been pulled every month, and the same value shows up thrice.
+**Spe 6:** Then how did the total match the Power BI dashboard?
+**Spe 9:** It matched with the Power BI when we removed the multiple rows.
+**Spe 6:** We will validate this once again. I have set up a recurring invite for the next two weeks. Please pull the historical data, and get that validation meeting done.
