@@ -1,1 +1,514 @@
-demo
+demo::
+
+### **Detailed English Transcript**
+
+**Speaker 1:** What is happening is the values are not matching; all the invoices are not matching between the March AR (Accounts Receivable) Region sheet and the October to March collection sheet. Only 169 are matching. If you look at the format, mostly the invoices that match are ones generated in 2025, because their collection is stored in the 2024 to March collection file. 
+
+**Speaker 2:** Let's check the ones that are not matching. Let's take the very first one. This invoice is from February 11th and its due date is March 28th. They might not have paid it yet, or they might pay it later, and the AR collection report we have is only up to March, so it might not have been collected by then. 
+
+**Speaker 1:** Let's try this one from Walmart. About $25.37 was received on the 25th, meaning it was collected then. But the invoice was generated on November 18, 2025, and was supposed to be paid in 30 days on December 18, 2025. The payment has arrived, but we don't have the record correctly. 
+
+**Speaker 2:** Try the second or third Walmart invoice. The outstanding amount is 0.40 in USD. But if we go to the collection records, we see multiple records for the same receipt on the same day amounting to around $10. You will see three transactions on the same receipt on the same date, but the amounts are sometimes in minus and sometimes in plus. Can we extract the common invoice numbers?.
+
+**Speaker 1:** If we extract the invoice date, we can get the receipt date, which will give us the days taken for payment. 
+
+**Speaker 2:** But how do we know if that data is valid?. Are these same invoices being generated repeatedly for the same client?. The invoice numbers are the same everywhere, but the receipt dates are different, or sometimes the receipt date and receipt number are identical but with three different transactions on the same day. 
+
+**Speaker 1:** It looks like a partial payment was made. We are looking at the AR raising date for 2026 to see how much of this invoice is outstanding. Payments were made in 202-, but as of March 2026, this $0.40 amount is still pending for invoice number 300. The system is treating that 40 cents as unpaid or partially paid, which is why it keeps showing up. For this invoice, 96,897 has been paid. We can find the total invoiced amount from the raw data extracted for March. 
+
+**Speaker 2:** Also, check on the last FP&A / VAPT (network security) issues. Three have been closed, but the fourth depends on a network change for the Graph API implementation, which might take a couple of weeks. Another team member was asking about this; tell them we can give the first three and the fourth will take two weeks. 
+
+**Speaker 1:** Regarding the data mismatch, there is also the RBD (Reserve for Bad Debts) component. The RBD is listed as -32. The -0.4 and +0.4 neutralize, leaving the extra 0.4. We should treat the connection and AR raising data separately. For the rows that exactly match, we should add a flag like "match and close". For the ones that don't match, keep them separate so we can filter them out later from a master frame. These two datasets have different setups; one is collected, but the other is still showing in outstanding. 
+
+**Speaker 2:** What I am trying to do is basically create a denormalized table or dataframe. If we make a single denormalized table, the data will be right in front of our eyes, and we will be able to visualize the problem statement better. It will increase the data size, but we'll be able to see the nooks and corners of the issues. If you hit a blocker, ping the stakeholders one-on-one to get it answered precisely.
+
+**Speaker 1:** I have a question. Why are we including older invoices, like ones generated in 2022 but collected in 2026?. Is it necessary to include them since they are more than two years old?.
+
+**Speaker 2:** Yes, because they are still showing up in the system every month as unpaid. Think of it this way: if a friend borrowed money two years ago and hasn't paid it back, but sends $1 every month, you still need to track it. It helps us analyze customer payment behavior. Clients who are irregular with their payments pose a higher default risk and impact our budget forecasting because we don't know if we should include their money. 
+
+**Speaker 1:** So it doesn't matter what month the data is from, as long as we are calculating the days taken to pay. Our global AR Region file with outstanding payments will serve as our Test Set because we don't know when they will pay. 
+
+**Speaker 2:** And our Training Set will be the collection working register because it contains the invoices along with their collection dates, which is our target. We also need to extract features by joining the collection working and raw data. We need to distinguish between the Functional Currency (the client's local billing currency, like INR) and the Entered/Transaction Currency (the bank receiving currency, like USD). 
+
+**Speaker 1:** Let me show you the dashboard for our monthly collection trends. It will show top late payers, the number of late invoices, average days to pay, and the amount at risk category. 
+
+**Speaker 2:** Just giving them a revenue forecast isn't enough; we need to package it well and add a dashboard for "brownie points". We can use tools like Claude or ChatGPT to generate code for the dashboard in React. We will have an estimate or forecast page for each entity and client showing pending invoices and estimated days to payment. 
+
+**Speaker 1:** How do we prioritize the risk?. If a client owes $10 and pays in 5 days versus someone who owes $20 but pays in 5 months, who gets priority?. 
+
+**Speaker 2:** We should calculate a ratio of days delayed to the outstanding amount. We should calculate a score based on credit history and repayment behavior. Look at American Express versus United Healthcare; we need to see the average days delayed alongside the actual revenue amount pending to know where to focus our follow-ups. Even if a client like Amazon has only 3 late invoices, the total value might be massive, like $10.7 million. 
+
+**Speaker 1:** What about the currency-wise forecasting?. Do we use functional or transaction currency?. 
+
+**Speaker 2:** The very first step is to completely predict the monthly forecast for cash collection on an invoice basis across entities and clients. Only after we know how much collection to expect do we filter out the currency exposure to see what qualifies for hedging (Foreign Exchange Forward Contracts). Do not worry about the hedging right now; focus entirely on the collection forecasting first. You can check the AR aging report later for exposure.
+
+**Speaker 1:** For partial payments, we need a calculation. If an invoice is $1000 and they pay $500, the outstanding amount before the next receipt date is $500. We should calculate a "repayment ratio" feature to show what percentage of the invoice they are paying off. 
+
+**Speaker 2:** For training, we will use our "golden set" of around 79,982 unique invoices, filtering out the unapplied ones or refunds. We can get the original invoice amount from the raw data. We can use a rolling window function or rank function to sequentially subtract payments and dynamically calculate the remaining outstanding amounts for every invoice row by row. This will allow our model to predict the number of days to pay and the amount to pay based on the client and entity combination. 
+
+**Speaker 1:** What if we encounter invoices missing due dates or showing up annually?. 
+
+**Speaker 2:** If data is missing, we will reach out to our internal stakeholders to clarify. Let's all work on developing these models today. We will review everyone's progress tomorrow during the Daily Stand-up Meeting (DSM) around 3:00 PM or 4:00 PM. 
+
+***
+
+### **Overall Detailed Summary**
+
+**1. Data Discrepancies and Database Structuring:**
+The team is actively troubleshooting a financial machine learning project focused on forecasting Accounts Receivable (AR) cash collections. They are currently facing a severe data mismatch where only 169 invoices align perfectly between the AR Region sheet and the collection sheet. They identify that this discrepancy is caused by differing collection periods, partial payments, and system bugs where fractions of a cent (e.g., $0.40) keep invoices continuously flagged as "unpaid". To gain better visibility, the team agrees to build a fully denormalized table/dataframe. While this will increase data size, it will allow them to track the exact lifecycle of an invoice transparently.
+
+**2. Machine Learning Sets and Feature Engineering:**
+The team maps out their machine learning strategy:
+*   **Training Set:** The collection working files, which contain historical payment behaviors and exact receipt dates (their target variables). 
+*   **Test Set:** The global AR Region file, which contains current outstanding/unpaid invoices.
+*   **Feature Extraction:** They will engineer features such as payment terms, functional vs. transaction currencies, and a crucial "repayment ratio" to gracefully handle partial payments. They plan to use rolling window or rank functions on their "golden set" of ~79,000 cleaned invoices to dynamically calculate remaining balances sequentially after each partial payment is made.
+
+**3. Assessing Client Risk and Dashboard Deliverables:**
+Recognizing that sheer invoice volume isn't the only important metric, the team discusses combining the *outstanding amount* with the *average days delayed* to create a custom risk score. This helps differentiate between erratic, high-risk payers and high-value clients (like Amazon or United Healthcare) where just a few delayed invoices can represent millions of dollars in tied-up revenue. To secure "brownie points" with stakeholders, they plan to build an interactive React dashboard (potentially using AI tools like Claude/ChatGPT to write the code) that visualizes late payers, average payment days, and risk categories. 
+
+**4. Phased Approach: Forecasting First, Hedging Second:**
+To resolve confusion regarding currency strategies, the team lead explicitly divides the project into phases. Step 1 is strictly to predict base cash collections across all entities and clients. Step 2 (Hedging) will be handled later by taking the Step 1 output and filtering it for foreign exchange net exposure based on the delayed payment timelines. 
+
+Here is the detailed, full English translation of the conversation you provided, formatted speaker-by-speaker without missing any details as requested:
+
+**Spe 1:** So what is happening is that those values are not matching. All the invoices are not matching between the March AR Region sheet and the October to March collection sheet. Only 169 are matching.
+**Spe 2:** Look at the format once, mostly these are the invoices that are matching, like the invoice generated in 2025, its collection will be in that because we have stored it in the collection one. Meaning the collection from 2024 to March, so the collection amount of this invoice will be in that, so that's why it is matching. Similarly, this whole list is matching.
+
+**Spe 1:** Let's check the ones that are not matching once.
+**Spe 2:** The ones that are not matching. Okay.
+**Spe 1:** It matched.
+**Spe 2:** Let's take this very first one. Let's not go too far. Let's go and check this one here because this invoice is just from 11th February and its payment, meaning due date, is 28th March. But they might not have paid it because they might pay it later on. So the report we have right now, the AR collection report, is only up to March. Here if you see, this is till March. Might be this invoice wasn't collected at that time. Wait a minute, wait a minute, let's search later.
+
+**Spe 1:** This won't come because...
+**Spe 2:** Should I go again?
+**Spe 1:** The matched ones I gave...
+**Spe 2:** Let's do this one, okay?
+**Spe 1:** First one matched, then all...
+**Spe 2:** This is an amount from Walmart, it's around 25.37. Meaning the receipt for this came on the 25th, meaning it was collected at this time, right? But the invoice for this would have happened... now when we go and look at its invoice, it happened in '25. It happened on 18th November '25. This was supposed to be paid in 30 days on 18th December '25.
+**Spe 1:** The invoice amount is the same.
+**Spe 2:** This is matching. Meaning the ones that are not, their...
+**Spe 1:** Payment hasn't arrived.
+**Spe 2:** Payment has arrived, but we don't actually have the record. Like, suppose we have invoices, like in this March month...
+
+**Spe 1:** Try the second one.
+**Spe 2:** Second one.
+**Spe 1:** Second or third one is Walmart Inc. Okay? Its collection happened... Sorry, its outstanding is 0.40 in USD. But if we go here to the collection ones...
+**Spe 2:** Go back there, wait a minute, go back.
+**Spe 1:** Yes. How much is the amount?
+**Spe 2:** 0.40 meaning...
+**Spe 1:** 40, and its invoice...
+**Spe 2:** This is with the brother, right?
+**Spe 1:** What did you say?
+**Spe 2:** How much is its invoice amount?
+**Spe 1:** It's the same.
+**Spe 2:** Yes, actually the outstanding is just 0.40.
+**Spe 1:** Its bucket...
+**Spe 2:** How much should it come?
+**Spe 1:** Maybe above 365... 365.
+**Spe 2:** This is not a valid invoice.
+**Spe 1:** Meaning some 40 cents of it must have been pending.
+
+**Spe 2:** Okay, look at the next one then.
+**Spe 1:** Just show that one, when we search that in the collection records, it shows many records and it's mounting to some... yes, it's going around 10. Give me one minute, just a minute. You will also see one thing, right, that on the same receipt, there will be three transactions in a single day. Look at this one.
+**Spe 2:** Look at these three records, the date is also the same but the amount is sometimes in minus, sometimes in plus. Like somewhere it added, then subtracted, then sent 826. Can we do one thing? The common invoice numbers that are coming, okay...
+
+**Spe 1:** By extracting that invoice date, okay, the invoice date will come, correct.
+**Spe 2:** The invoice date will come, so can we have the receipt date, correct? From there we will get the payment days taken for payment, correct.
+**Spe 1:** But how will we know if that data is valid or not? That's what we are questioning. Are these same invoices generated repeatedly? Because once the collection is done, then again an invoice is generated for the same client. We saw the same one again...
+**Spe 2:** No, your invoice number changed.
+**Spe 1:** No, the invoice number is the same everywhere and their receipt dates are different. Sometimes even the receipt date is the same. Even the receipt number, right? Like the one I was just showing Ruchak, three times on the same receipt number in a single day. The date is the same, these three records are from 28th February and just...
+
+**Spe 2:** Change, then the receipt date is in '25. We are looking at the AR raising date for '26. Meaning how much amount of this invoice is outstanding in '26. Okay? Another...
+**Spe 1:** A partial payment happened.
+**Spe 2:** Right? Yes. We are seeing right now that this invoice has been paid this much in '202-. Okay. But as of 2026 March, this 0.40 amount is pending for that particular invoice number 300.
+**Spe 1:** Okay.
+**Spe 2:** So this still hasn't been paid. How the system treating it?
+**Spe 1:** How much has been paid here? 96,897 has been paid. Okay. 0.40 has not been paid.
+**Spe 2:** Hmm, that's why it is showing repeatedly.
+
+**Spe 1:** Correct.
+**Spe 2:** Okay. Because this means most of things were paid but 40 cents were not paid. System is treating that it is unpaid or partial paid.
+**Spe 1:** Good point right this question. Which voice is it?
+**Spe 2:** Yes, 300. You should also ask this question, right, about the receipt number thing, that how come there are three transactions on the same receipt in a single day? Same account... meaning this one.
+**Spe 1:** How much is the total right now? 98000 out total...
+**Spe 2:** 96...
+**Spe 1:** 96897.
+**Spe 2:** Where are you finding out 96897 from? Here total minus this...
+**Spe 1:** We will know that total amount from the invoice number. In the invoice number...
+
+**Spe 2:** We will get the invoice number from here.
+**Spe 1:** We will have to look at all the records for this invoice, right? Yes.
+**Spe 2:** You are just putting one, right?
+**Spe 1:** Yes, right now because just for one month...
+**Spe 2:** Yes, as of March this is what is outstanding, correct. How much amount was invoiced in this invoice, we can find that out from the 2026 March raw data that Divyansh extracted.
+**Spe 1:** Okay, check once the last FP&A, these four issues. Okay, VAPT issues, they have been long outstanding, we have to close this. I told them three are done, the fourth one it depends on network change that the Graph API you will implement, right? That will happen then only we can release the fourth one. So they said at least give the first three, we will close those. Fourth one will wait and we have to give an ETA on when it will be done.
+
+**Spe 2:** It's the same thing which Dheeraj was also asking. No, fourth one...
+**Spe 1:** Even Dheeraj was also asking is it the same same show?
+**Spe 2:** Yes yes.
+**Spe 1:** Yes yes.
+**Spe 2:** Even I don't have a resolution date for that.
+**Spe 1:** Okay, give these three, fourth one for two weeks of time, or give next week 12th, 10th.
+**Spe 2:** How much was its invoice... invoice amount?
+**Spe 1:** Till here now...
+**Spe 2:** 897.
+**Spe 1:** Yes, and its outstanding given here is 96962.
+**Spe 2:** 969 62?
+**Spe 1:** Yes.
+**Spe 2:** 6962.
+**Spe 1:** I have marked AR in the table flag. There is one more, RBD.
+**Spe 2:** Do RBD, do it.
+**Spe 1:** What was the full form of this RBD?
+**Spe 2:** RB...
+
+**Spe 1:** It was some diff, then revenue was Reserve for Bad Debts, RBD.
+**Spe 2:** Bad debt, here also they have written outstanding minus 32.
+**Spe 1:** Look, this is coming as -0.4. - 0.4 + 0.4, okay? This got neutralized, then those extra 0.4 are coming.
+**Spe 2:** Hmm.
+**Spe 1:** But the RBD component is more right, minus 67. Remove RBD. Remove RB.
+**Spe 2:** This came to four only.
+**Spe 1:** Yes, this is four. Match sir.
+**Spe 2:** But this...
+**Spe 1:** Correct, because it got extracted on all three dates. One second Dipesh, what I think we have to treat this data separately. Connection and AR raising... why are you separating? I mean I am saying take the ones that are matching, right. The ones that are not...
+
+**Spe 2:** The ones that are matching...
+**Spe 1:** The ones that are matching, their values are not matching. Everything is different... look, right now it's writing there 96 897 is the date from collection. Okay? And in outstanding, 0 is showing.
+**Spe 2:** So you are saying take a flag that 0.4 is outstanding and...
+**Spe 1:** No no no the invoices which are exactly matching rows.
+**Spe 2:** Okay row.
+**Spe 1:** Hmm, the ones that are matching, add a table there, yes match match and close done done understand. And the ones that are not, do this for them that they are not matching. So that from a master frame you can, you know, filter out later. Understood, but I understood but both of them I feel both of this data they have different, you know, war field not war field different setup. Okay? This collection got connected. But this outstanding, it hasn't been collected in outstanding yet. Okay?
+
+**Spe 2:** Okay? Make an outstanding table. See what I am trying to do is basically create a denormalized table or data frame.
+**Spe 1:** Isn't it?
+**Spe 2:** Okay?
+**Spe 1:** I mean do it, keep the ones that are matching together. So that we can do it from a single frame. I mean... will there be any loss from that?
+**Spe 2:** Not a loss.
+**Spe 1:** Just the data size will increase.
+**Spe 2:** Data size will increase and now we should get all the outstandings in this and if it is really urgent if it's a stopper okay ping Harpreet one to one get into a chat message or call get it answered she also said the same thing in the last not to include me or anyone just add it but be very precise what you are asking. Combine two three questions and ping her. Respected...
+
+**Spe 1:** Can we do something like this... this much is paid for one invoice, this much is outstanding, we can do it by making two columns like this.
+**Spe 2:** We can do it by making amount, outstanding amount. So let us try that before going to let us try.
+**Spe 1:** Do it, do it. I am saying, why am I saying make a denormalized table, right? Then the data will be right in front of your eyes fully.
+**Spe 2:** Will be able to visualize the problem statement better.
+**Spe 1:** From day... from day one only we are trying, I trying to say that make a single one because the data isn't that big either. You did multiple normalized data frames.
+
+**Spe 2:** Hmm hmm okay for this quiz case if I... make that one then okay nooks and corners will be able to see you understood right.
+**Spe 1:** And one more thing you right now G and you you are working on the data which Divyansh has shared or their March data...
+**Spe 2:** Both their data, both their data because here our payment date is not...
+**Spe 1:** Payment date... payment date wasn't there either, right?
+**Spe 2:** The working register file that was there in shared data... one sorry collection working file and... and which AR region...
+**Spe 1:** This one.
+**Spe 2:** Global region.
+**Spe 1:** This.
+**Spe 2:** Global Excel AR Region which is only for March.
+
+**Spe 1:** Yes.
+**Spe 2:** Okay that will be a partial data isn't it?
+**Spe 1:** But we will find out as of March how many are outstanding and how many payments happened between October to March.
+**Spe 2:** But we don't need final right, we need this... need the behavior so we will have to look month wise. The invoice, when was it paid. Okay? You do it. I am trying parallelly trying something else from my end. Let's see. Not both thing in the same direction. You try your approach.
+**Spe 1:** Okay.
+**Spe 2:** Okay. Find then park your questions okay whenever you feel that something has stopped you are not able to move forward ping Harpreet and did it answer at that time itself did not wait for tomorrow okay go.
+
+**Spe 1:** Yes yes whatever whatever question it is then that yes I mean we have to do it today otherwise understanding won't move forward or progress won't happen. Call or text them as per time.
+**Spe 2:** Then tell me I will find this out. I had to ask one thing, why are we taking these older invoices? I mean like suppose there is an invoice, like right now here is an invoice of '30 month' but some invoices might have been generated in '202' but its collection let's say happens in '26. Okay, so is it necessary to take them because it's been more than two years?
+
+**Spe 1:** It's been more than two years, has it been paid or not?
+**Spe 2:** It is still coming every month, suppose... meaning it's coming in the system that yes you have to pay this much, pay this much every month, but the client isn't paying.
+**Spe 1:** Think it that way. Your friend borrowed money two years ago. Hasn't paid till today. Every every month he is sending ₹1 ₹1. Next time when there is a loan, will you give it when he asks?
+**Spe 2:** No.
+**Spe 1:** Okay.
+**Spe 2:** Or the recent payment, he pays this well in two-three months, okay. But earlier his payment... meaning he wasn't that regular.
+**Spe 1:** Wasn't.
+
+**Spe 2:** Wasn't.
+**Spe 1:** Hmm.
+**Spe 2:** Okay. Now also if you want to give him some payment, you will think twice because things aren't right. Sometimes he pays. Sometimes he doesn't even pay on time.
+**Spe 1:** And this nails are more dangerous.
+**Spe 2:** This... meaning there are higher chances of defaulting.
+**Spe 1:** Yes, meaning look, those who pay properly. Okay? You know this money is going to come. Okay? Those who don't pay on time, they know that the money isn't going to come.
+**Spe 2:** Okay? And the people who are these 50-50% chances, they are more of that trouble. Why? Because you don't know if you will include their money or not in your budget.
+
+**Spe 1:** If you include it, they won't pay.
+**Spe 2:** Then it will have more.
+**Spe 1:** Or it's the opposite. Right? Yes, so it's a bit like a vote. Will have to pay a bit more attention to their modeling. Hmm.
+**Spe 2:** Okay carry on I maybe I parallelly do a little research on this time.
+**Spe 1:** So how many are there now, these are the invoices in total.
+**Spe 2:** The ones that are matching...
+**Spe 1:** Unique invoices... no no just unique invoices, and one more thing, taking month wise data... month level date has no meaning at all. Why? Because we are going to see the behavior of the customer behavior.
+**Spe 2:** So how many days did it take for that customer to pay an invoice? Whether it's in March 202-, March 2026, or the activity of that invoice is in October '24...
+
+**Spe 1:** Doesn't matter it as long as we are getting the days taken to pay. Okay? It doesn't matter if we are getting March's data or this data or whose data we are getting.
+**Spe 2:** Correct correct. But you will have to take all the data. Historical data.
+**Spe 1:** Yes, will have to take all of it.
+**Spe 2:** Yes, not necessary man, it's like history.
+**Spe 1:** So...
+**Spe 2:** What will this be, this outstanding file okay, this global AR region file.
+**Spe 1:** In which it is outstanding, payment hasn't happened. Okay this will be test set.
+**Spe 2:** The AR raising file in March, we don't have the date in March... the latest date, these are all outstanding, we haven't got it. When will these guys pay, we don't know. So this will be a test date set correct.
+
+**Spe 1:** And our training data set will be the collection because here along with the invoice we have the collection, this is also that its invoice working register okay.
+**Spe 2:** Done.
+**Spe 1:** Yes.
+**Spe 2:** Collection date but is this the month or not. This is from October to March. Operating unit collection from date 10/12 to date 16/3. Okay. So...
+**Spe 1:** This data is in the working register right, the whole data is not this.
+**Spe 2:** This working register...
+**Spe 1:** No, from '24 the working one... the working register connection working is one file. And one is inside the shared data, collection working...
+**Spe 2:** Working... no that...
+**Spe 1:** The data which...
+
+**Spe 2:** No, which Krishna...
+**Spe 1:** Krishna sent, that I guess I mean he sent it on root only, root folder.
+**Spe 2:** Here is that one... this whole is data '24. Can we used as a training data.
+**Spe 1:** Correct.
+**Spe 2:** This thing only as a training date man, that's true because we will get this target here.
+**Spe 1:** Yes.
+**Spe 2:** Right, operating unit receipted. Yeah, make sense.
+**Spe 1:** And one more thing, this functional currency and entered currency. Okay.
+**Spe 2:** Functional currency is a currency in which a sale has been billed.
+**Spe 1:** Hmm.
+**Spe 2:** Right? No.
+**Spe 1:** Local currency... okay their local currency and entered currency in which action will receive. Sorry, transaction currency.
+
+**Spe 2:** That is transaction... tell me.
+**Spe 1:** What are you saying? Set related to the bank, which one is it? 59 okay. Take T75. Okay. Delivery center in... okay. Look at this, transactional... this currency functional currency INR. This is their... local currency. Function will be INR. Okay? Look at this currency. Look at some other one. Leaving 75, look at some other one. Look at C61 functional currency local currency...
+**Spe 2:** Which is a this operating unit currency.
+**Spe 1:** Gurgaon's was also there correct, in C75 too there was functional currency local currency. Okay.
+**Spe 2:** Now only your entered currency entered currency and what else was there do the match enter currency transaction currency match.
+
+**Spe 1:** And transaction currency.
+**Spe 2:** So client is giving this to them in this currency and entity is receiving in this currency. Basically this is a banking currency and this is a receiving receipt currency which belongs to the entity. So let's see for another, look at some other place. Look at Australia. Australia up up yes okay. Okay. One Europe Australian dollar dollar, leave this, Australia some other leave, scroll down.
+**Spe 1:** This transaction will be bank and enter currency look here transaction correction where USD which bank waste transaction currency in which that transaction happens which bank... okay, so we will have to extract features by doing some some joining using collection working and the raw data. Like payment terms. Okay? Invoice number and all that payment term.
+
+**Spe 2:** Look, I'll show you one thing. This... is my screen visible.
+**Spe 1:** Sorry okay Shivas, I wish to analyze that report. Okay monthly collection trends. Okay cash by operating. Okay main thing is look at this one, top late payers... what is this on client level it will show late number of invoices which are paid late. Average days to pay when you will pay this many days they make the payment...
+**Spe 2:** After due date average date. Amount at the risk category it has put average risk let take care it has put this risk okay. Then operating unit Excel add invoices is this much, total collected this, average to pay 9.7. So this is good. Now shareholding in they are paying early. So this status is excellent excellent early it happens. Average day to pay maybe yes it goes up and down but this are average. This critical hot invoice count 249 this modeling based on the pattern lot give this. Okay inside collections are glowing monthly jump this one see problem average 153 days yeah 153 days.
+
+**Spe 1:** So this is this is how the customer payment has...
+**Spe 2:** Okay just be a part of our submission dashboard hmm hmm we will have to do something right. See when we started revenue forecasting I proposed okay we will just give revenue forecasting then strongly objected that just giving one forecasting and for that they are paying so and so project cost it's not justified. Even if it's that's what we are going to do but just... no to show much more than that. Then at the end they will say hey I gave this much... you know right that you order something hey I ordered online so it was looking very big.
+
+**Spe 1:** Brownie points.
+**Spe 2:** No no size of this picture when you order it looks very big once you get this size so just make it packaging nicely so say added this dashboard on top of that.
+**Spe 1:** Okay. Okay.
+**Spe 2:** Understand? So in the dashboard I'll tell you beforehand. This is nothing good simple rules. Like it was done here, that my dashboard.
+**Spe 1:** Not our project, what was its name? Modern Modern Shr... in this there is some this forecasting pattern pattern there is nothing in this. This is as is from look it run un comments...
+**Spe 2:** What all was done. Install file xl final format sheets sheet read the sheet load return data frames depend separate trends aging analysis this things... so which one do you need? 100/6 using the Claude work or the code.
+
+**Spe 1:** Cowork... in this look in the code something goes Claude you have license?
+**Spe 2:** I don't use but I think that's the Claude board.
+**Spe 1:** I am using chat co.
+**Spe 2:** I thought... I mean let's do analysis. I do have Plot. I use it. I have also used the cowork one.
+**Spe 1:** I have also used that just once or twice for file analysis. This is the basic stats. Its was found. Look for did only that description detail. Okay? Draw... so drawing was done with all and description. Okay? Then in deeper analysis what was done values count short values done this happens its different look in operating unit this ran in operating unit in operating unit value accounts its number of EMI invoices okay.
+
+**Spe 2:** This you one V whatever is coming like this right we can convert this... let's make this and keep it so that we make this content and we can integrate it directly.
+**Spe 1:** What one we React React will make then we will show there... and what else will be there, one Facebook will have estimate pages... estimate or forecast page will be there. That forecast in for each entity, okay entity wise and then client wise all these invoices are pending and estimated days to payment or payment date will be this, a table type will come.
+**Spe 2:** Hmm hmm.
+**Spe 1:** Yes meaning...
+**Spe 2:** Yes.
+**Spe 1:** This is the analysis... okay profile name of this is your behavior trend. This is your forecast. This is your inside dashboard.
+
+**Spe 2:** G you want to ask anything on this clear?
+**Spe 1:** Yes clear but some some receipts are actually coming many times.
+**Spe 2:** Hey brother that is there, they will go but end goal end goal what all will we show in this?
+**Spe 1:** Yes yes this is understood now look at the dashboard here.
+**Spe 2:** One thing I want to know this. You have made it but in this your meaning who are you giving priority to? Like suppose someone took $ and he gives you in five days. Okay? Okay slowly slowly okay. So are you considering him good or are you considering him critical? Then someone who has taken 20 but he is giving in five months instead of five days. So who are you...
+
+**Spe 1:** I mean we will assume like on what basis like based on the number of days, based on the number of amount...
+**Spe 2:** We can make a ratio. Days to amount.
+**Spe 1:** Let him answer.
+**Spe 2:** Let him answer you think... like suppose...
+**Spe 1:** One one guy one guy is sitting taking $. Five guys are sitting taking some $20.
+**Spe 2:** But the recovery or your where will the effort be less... investment... sorry what do you call it, revenue will come more if the $ one comes quickly then it will be good or who will I ask once or twice and he will give me quickly but I will have to go there five times right...
+
+**Spe 1:** The same funda... do anything think about the business first it's not like what is easy. Okay? Understood? Meaning tentative...
+**Spe 2:** Not understanding a little... a little then meaning in a way whatever things are main meaning parameters we will have to take all of them as a count meaning a little a little so that meaning we don't go out much... meaning we don't go too far out okay whatever our solution is.
+**Spe 1:** Right so the client which is giving and which is going over to years till...
+**Spe 2:** And has been delayed for a week. Kept a ratio a score of it like okay.
+**Spe 1:** Okay also do a calculated score of like outstanding amount and the outstanding number of days delay days calculate. Okay? And based on the credit history derive a score that yes he pays this quickly usually. Okay, now looking at this I am sharing my screen if you see any... any client okay look here...
+
+**Spe 2:** Medium okay this one is American Expression. Okay? If they if anything is pending with this. From its behavior you know this thing will come up within 14 49 days.
+**Spe 1:** Days okay? If yours is going in United Health and average is this. But at the same time look at the amount. This is sir this is late amount. How much revenue amount is pending?
+**Spe 2:** Hmm it's not like American Express took less. It has take care but if we want to increase the revenue. I want to follow up on this the client United Health Care more compared to American Express.
+
+**Spe 1:** Most of our meaning business happens with United Health Care only.
+**Spe 2:** Happens with United Health only. Actually this is the highest amount.
+**Spe 1:** Not necessarily.
+**Spe 2:** Actually in this data it's telling this only, whatever data...
+**Spe 1:** Are you looking at the top heading?
+**Spe 2:** Yes yes.
+**Spe 1:** Yours your friend takes lakhs lakhs of rupees. Returns it the next day. He won't come to this list.
+**Spe 2:** Yes he won't come. Amazon Development Center. Okay? Number of invoices look late invoices are at. Look here number of late invoices are three. This three late invoices conceits around 10.7 million. Amazon's 8 is coming around 12 million. Right? And you can say uh what do we call it? Average average invoice amount late inverse amount we made one right average something.
+
+**Spe 1:** This picture...
+**Spe 2:** Yes yes.
+**Spe 1:** Something so those kind of things you can whatever child level modeling you will do this things you can use stretch hope this gives an idea.
+**Spe 2:** Yes yes.
+**Spe 1:** If anyone wants to take a screenshot then take this...
+**Spe 2:** Just a minute.
+**Spe 1:** First let me add you wait.
+**Spe 2:** Average positive posi... no I had said one more unit dollar for recovery something like this okay number of days need percent of outstanding right okay it went in the wrong group sir.
+**Spe 1:** No let it be, it will stay in one place because those are not regular connection.
+**Spe 2:** Okay.
+**Spe 1:** That is our weekly meeting right sorry daily meeting right.
+
+**Spe 2:** Okay our internal okay. Contract GPT India has the single extreme outline three versus average list discussion related distribute this is a keep this sample so that first I do one thing. I can download this file and same okay so there are limited credits racha cloud in so be careful.
+**Spe 1:** I don't have coword.
+**Spe 2:** Don't have.
+**Spe 1:** Okay.
+**Spe 2:** Give screenshot.
+**Spe 1:** Hmm.
+**Spe 2:** Upon doing overwrite to go it is asking me for admin password. In admin password the username is mine only. So I entered my own password only.
+**Spe 1:** So after that happens it becomes like this. It is showing retrieve here instead of this. Okay?
+
+**Spe 2:** Hmm okay. So use chat over here. The chat that is there in that...
+**Spe 1:** Yes then it is showing like this feature environment enablement on exit code and but there is something enable this feature then restart restart application restart I already did okay let me restart... so right now it is a bit clear to me that taking the collection date and seeing past historical pattern and have to do prediction on that we are reaching outstandings.
+**Spe 2:** Hmm.
+**Spe 1:** And okay. I will do something. Hmm sure sure look look this one if you can access where are both this is the group right.
+**Spe 2:** Drop it.
+**Spe 1:** People will get happy. So that is nothing that is not for reading the model just Jai sun...
+
+**Spe 2:** Okay madam is on leave today maybe.
+**Spe 1:** Today what today sorry you we let's start that.
+**Spe 2:** Hmm.
+**Spe 1:** Okay meaning got an idea at least use case one and two are clear is it hmm hmm.
+**Spe 2:** No if there is nothing else then tell.
+**Spe 1:** And one more thing the currency wise we were going to tell that won't be the functional currency right that would be the transaction currency and in that I have a little confusion which currency?
+**Spe 2:** Functional currency whatever which is other than USD they all qualify for...
+**Spe 1:** HM.
+**Spe 2:** Okay but based on the volume whatever whatever is more they are mostly on the Canadian dollar Australian dollar or GBP it's not like we are in India one we can't do you extract all okay then we will filter them out what do you need this okay then functional currency our currency wise.
+
+**Spe 1:** That is that is last okay right now what is it you have to predict the monthly forecasting for cash collection okay first thing.
+**Spe 2:** Invoice wise okay.
+**Spe 1:** Yes listen like this invoice wise your monthly collection is this out of this not all does not qualify for hedging which you have qualify for hedging you have filter them out so that is second step of hedging the first step is your forecast.
+**Spe 2:** Okay.
+**Spe 1:** Understood.
+**Spe 2:** Yeah yeah to understand.
+**Spe 1:** That our first step is this only that invoice based on wise we have to predict how much meaning collection will come based on currency hmm.
+
+**Spe 2:** No no not not based on currency overall.
+**Spe 1:** Okay over.
+**Spe 2:** How much currency is how much over.
+**Spe 1:** So currency wise whatever we will do then we will entity will come entity currency then we will predict yes that how much currency...
+**Spe 2:** First do what entity wise and client wise whatever is there okay.
+**Spe 1:** Extract its this understand payment and invoice and payment on okay.
+**Spe 2:** Okay.
+**Spe 1:** Then you this then you will get to know this so that's the first step.
+**Spe 2:** Hmm.
+**Spe 1:** Whatever modeling you have to do understand after doing then you can forecast that brother in this month this much billing is there invoices are there by when will they pay suppose they are whatever they paying is distributed over the next five six months okay.
+
+**Spe 2:** So how much will come in this month for us in total last month we would have done something in this current month we are also telling that this will only forecast this much this much so total this month forecast on the correction side they we are doing for revenue side here we have to do this in collection set how much...
+**Spe 1:** Okay.
+**Spe 2:** Done that is done total collection set okay on top of that whatever you have predicted so and so clients will give this much this much then we have to filter out where there is currency exposure only those things will qualify for agent.
+**Spe 1:** Okay understand meaning where I am this way do like this talk be busy don't worry about the hedging right now now focus about the forecast.
+
+**Spe 2:** Okay.
+**Spe 1:** Okay then who will do what tell so we will do one thing so work will happen right now.
+**Spe 2:** No for understanding will have to do everything.
+**Spe 1:** Will have to do.
+**Spe 2:** You can't thanks.
+**Spe 1:** Okay.
+**Spe 2:** That's why I they have given you and win the same task and Dhanraj that all three make this model so that will get at least some understanding for regular look I am again sharing my screen.
+**Spe 1:** Visible.
+**Spe 2:** Yes sir the AR collection does not guarantee something currency ex what is it? You have receivables in USD this much okay desktop.
+**Spe 1:** Sorry I am sharing other one okay you have receivable stock 235 million this won't be there now comes GPP 28 million you have hedging opportunity heavy AR and Euro okay that's what to mean knowing when they they are expected to be collected has size the foreign exchange forward contracts this are the current expect from that you all normally how much is receivable according to that you can just filter and put it.
+
+**Spe 2:** Okay okay.
+**Spe 1:** First do for everyone then will see its later exactly.
+**Spe 2:** Once.
+**Spe 1:** That's a problem for another day but today this okay now the collection time list with 37 day average delayed okay whenever you pay after 37 days if this money comes that amount will not be eligible for next month's right June because it doesn't come inside this it comes of 37 days so this will not be eligible for June will be for July so your actual cash receipt is later than invoice this shifts your hey tenor.
+**Spe 2:** Okay I wasn't talking about that later pay patterns USC to 10 days delayed this US USD dominated your USD express window is much longer than invoice due to suggest this so we will see this later what it is how to utilize it correct we are not sure but on the payable part this is the what we what it cannot do it has no open or unaffected AR only receipts.
+
+**Spe 1:** Whatever is in AR aging.
+**Spe 2:** You cannot see current outstanding or exposure so you will get this in AR aging okay that after how many days it is happening that will be for the forecasting associate so collection this registered say you can train the model agency you can forecast the model okay and also the near near future in how much how much is this look training training data like you trained the model we are going to how much are we going to generate collection next month that's on the prediction product okay on top of that what you have in your aging file from that you will get we are expecting this much in the next month so now you have a forecast and you are some expectation so that you can compare and come of with better how we will do I don't know let's see that okay so that's sir what to use no exchange date verse connection can it quantify actual exchange rate so we don't know this. This is clear scope for us...
+
+**Spe 1:** Yes whatever treasury does here we say brother you will get this much money you invest so no functional currency mismatch analysis I land entity building and USD that I am not sure what we will do what this is this registers historical collection report not an AR aging open items for aging you need to open AR report okay whatever we said unpaid invoice currency your life FS express to hedging report from that only you will get.
+**Spe 2:** This is I remember this thing this is 100% to open AR report that's that's what tells you your life for an action you have open right say let's start it.
+
+**Spe 1:** And one more change we'll have to do that let's say this receipt's partial payment happened. Okay? Multiple payments or one client's one payment happened of this receipt.
+**Spe 2:** The on the rate of the receipt before the receipt what was the payment outstanding we will have to extract one.
+**Spe 1:** Because meaning invoice invoice value.
+**Spe 2:** Ya no like let's say I have a invoice in January 31 and January 31 my total outstanding was $000 okay.
+**Spe 1:** Due date was Feb 15 I paid $500 within Feb okay let's on 14 Feb okay.
+**Spe 2:** So on 14 Feb the transaction that happened its amount outstanding will be $000 then one payment of it happened 500 then remaining balance became 500 okay then what I did after the date after Feb to March 15 I made one more payment $50 okay.
+
+**Spe 1:** $50 this is a received amount but before that how much was its outstanding it was 500.
+**Spe 2:** So one make sense of this could be that out of meaning out of outstanding how much is this paying. Okay? So that it's paying this much that might become one of our dance for this invoice this much was outstanding given the client and entity and some other features it can pay this much.
+**Spe 1:** Then that's that for the partial payment that what percentage of partial payment is it...
+**Spe 2:** Correct correct.
+**Spe 1:** That we have to add as a column any if this payment is there if he is making full payment then divide that value.
+
+**Spe 2:** 100% done if anyone is paying less than this for example like we had weighted pipeline.
+**Spe 1:** Yes yes.
+**Spe 2:** It gives you ratio.
+**Spe 1:** Right % it is so here do one thing of this payment make this a ratio how much was the invoice and how much was the payment take that ratio.
+**Spe 2:** Okay okay.
+**Spe 1:** Okay so then that will give an option that yes it is meaning there is some pending amount and we cannot consider all of this...
+**Spe 2:** Okay but but that's that's a good question how to encor print that in in training but this does not qualify as any training later or we can take that repayment ratio as a feature.
+
+**Spe 1:** In repayment ratio what I was thinking that this invoice number which is there valid invoice number okay.
+**Spe 2:** This invoice number's I will remove all those unapply on accounts because they are having some value but we are not able to map it.
+**Spe 1:** Okay?
+**Spe 2:** So the ya don't know how to handle them. Even I am not able to figure out.
+**Spe 1:** So suppose we...
+**Spe 2:** This is our golden set for yourself.
+**Spe 1:** Yes.
+**Spe 2:** Take this one right for training. Okay done.
+**Spe 1:** Here we have around near 79 unique invoices these these all that are there unique meaning near 79000 982 okay in this if we remove three then you have filtered out three right the ones that are unbilled are refund are okay.
+
+**Spe 2:** Refund okay so the receipt we have against this invoice number we will extract its invoice amount.
+**Spe 1:** So you will group by yes meaning in a way.
+**Spe 2:** By grouping by making invoice yes invoice number will have to be taken. Okay? We will take that invoice number and the original invoice amount so we. This is a starting invoice amount. Okay?
+**Spe 1:** So tell me one thing from where will you bring the starting outstanding amount of this invoice which will be there for the first time for this invoice? This is the collection we got from this invoice till now. This is collection...
+**Spe 2:** We will have raw data right 23 we have raw data.
+
+**Spe 1:** Okay the one that Divyansh sent yes.
+**Spe 2:** Yes. So first what will we do? Suppose here invoice we will get an invoice date as well, invoice amount as well. Okay?
+**Spe 1:** Whatever the earlier invoice amount will be its first row we will fill that invoice amount the next corresponding rows of that invoice that will be okay after that we will do what this amount minus the paid amount or the receive amount or the entered amount okay after subtracting from there whatever is remaining they go to the outstanding of the next row for that invoice.
+**Spe 2:** Okay so by using the roll time of the rolling window basically by using the rank function by using window function this can be done.
+
+**Spe 1:** Understood in a way you want to see in a way that in which which one how much invoice outstanding is left. Like this...
+**Spe 2:** Correct. So when we we will use this here aging data as sorry aging date as the test set we have outstanding. Correct. So we will be able to predict that out of this 5000 for this combination invoice client this is going to pay this much in this many days because there will be two feature target to predict number of days to pay and amount to pay okay out of this so according to that we will have to make agree clarity but I see I will know but to.
+
+**Spe 1:** Yes now I got a little clarity.
+**Spe 2:** Right social it with that don't wait okay.
+**Spe 1:** Okay.
+**Spe 2:** And one in your mind got it out.
+**Spe 1:** And one more thing like some date came annually this invoice doesn't have an invoice date okay this is not the due date etc etc is not there so in that case we should reach out Harpreet to so reaching out has no point we will she will be able to just a significance that why is this...
+**Spe 2:** Like this right.
+**Spe 1:** So will we do to Krishna or...
+**Spe 2:** Krishna Krishna Harpreet is the Harpreet asked her and and in the group chat those who is the right personal take picture okay don't worry it's not a personal favor you are asking the project is like need some date which need to be clarified that's why we need some okay look what is saying extract your AR by currency okay USD GBP AUT Europe and IF okay expected collection date due date plus your known delay date whatever it is based on that you can extract secure qualify for...
+
+**Spe 1:** Correct.
+**Spe 2:** Meaning the delay days we have to take the average of that and do it.
+**Spe 1:** But I don't think that's correct.
+**Spe 2:** Hmm that's what we won't be able to tell the payment date.
+**Spe 1:** Hmm.
+**Spe 2:** From that model we will meaning arrive at that on an average you amount you are going to get in this number of days. That's it.
+**Spe 1:** Yes yes yes that is forecasting totally.
+**Spe 2:** Yes.
+**Spe 1:** What are saying that is AR forecasting model.
+**Spe 2:** Okay okay you are saying GBP one. Yes.
+**Spe 1:** Meaning irrespective of the gym meaning this USD one that is the currency forecasting. After currency forecasting is done we will get to know this for given given month how much money we will get that will qualify for your age that's kind of a filter identify your net exposure for each currency total invoiced amount minus functional currency equivalent that's net exposure just we invoice okay told two parameters then let's come back to GBP that I will include the currency now okay.
+
+**Spe 2:** But let's look from the invoice level right now then GBP levels I think it will be rolling up rolling down.
+**Spe 1:** Hmm okay do do don't worry good G what is expected from you.
+**Spe 2:** Yeah I will also do from my end okay.
+**Spe 1:** When will you show.
+**Spe 2:** Tomorrow okay.
+**Spe 1:** At what time.
+**Spe 2:** Before the call.
+**Spe 1:** 4 or 5 o clock.
+**Spe 2:** So we will sit at 4.
+**Spe 1:** Okay I will do this should I show BSM.
+**Spe 2:** Show at 3 o clock okay.
+**Spe 1:** Okay okay let's go through your work during the day.
+**Spe 2:** Okay okay.
+**Spe 1:** What is expected for tomorrow right now the full...
+**Spe 2:** Whatever whatever are your understanding best understanding okay uh go ahead develop something will see okay.
+
+**Spe 1:** Let's see your understanding. Will know by looking once and where this gap is happening. I am also building a model. The moment I do something in half an hour another meeting will come. Then I will get off track I meeting and delete 30 setting from six. Let's see. Okay alright don't worry do it G I will be seeing your work tomorrow.
+**Spe 2:** Okay okay.
+**Spe 1:** Okay.
+**Spe 2:** If anything happens text me that I couldn't do it I know you will be away during the first hour that's why DSM I am not including your work once you are back or complete it tonight tomorrow okay. I will do the first thing tonight only. Hmm.
+
+**Spe 1:** Okay.
+**Spe 2:** Okay.
