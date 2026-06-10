@@ -1,1 +1,272 @@
 note
+Here is the full, in-depth English translated transcript of the conversation from the file "Wednesday, 12_30 pm.m4a.mp4", formatted speaker-by-speaker, along with a detailed overall summary. To maintain anonymity as requested, all personal names have been replaced with generic speaker labels. 
+
+### **Detailed English Transcript**
+
+**Speaker 1:** Hi, hi.
+**Speaker 2:** Why don't you go to the Pune office along with... When he is planning, I mean I can go at least once to visit. 
+**Speaker 1:** Tell him yes, tell him you can. Code in it and do this integration by Friday, okay? So can we go...
+**Speaker 2:** For the Friday demo? Yes, for the Friday demo. Let's have...
+**Speaker 1:** Can you please show the UI what we have developed? Visible?
+**Speaker 3:** Yes, yes.
+**Speaker 1:** One thing on the color theme side, okay. Don't take that theme from the revenue forecaster seen on the left side. 
+**Speaker 3:** Yes, so yesterday we discussed that, and we are going to change that as well. So we are going to it body.
+**Speaker 1:** Yes, you have the corporate guidelines, right? Take that corporate theme.
+**Speaker 3:** Sure, I mean the one which is on the right side, that looks good right.
+**Speaker 1:** Yes, that theme. Take whatever is our approved thing. 
+**Speaker 3:** Sure sir, it was in the corporate guidelines. Yes, we have made all the changes here. We have created a toggle button for this line so it won't be showcased if we close it, and we have changed all the cards here. We have integrated all tiers in this according to the early, slight, moderate, and heavy delay; we will get the data according to it. Renamed to Early Payers. Early Payers, okay. Slight Delay, Heavy Delay, something like that.
+**Speaker 1:** Okay, vendor, okay. And can you see all...
+**Speaker 3:** Yes, and we are not showing the tiers here. 
+**Speaker 1:** Okay, anyways they are placeholders. And what is the heading for this, I will correct this. This is also showing cash flow, showing the negative one too. The color theme is not good, you work on this. Okay, take the approved theme from the edge and go a bit...
+**Speaker 1:** Any modifications to the names, have you finalized what to show for Early periods?
+**Speaker 4:** We can keep it as "Early". "Slightly delayed," "Moderately delayed," and we can do it like that. If they pay early, I don't think a kind of red theme will look good. But whatever it is, come up with the final.
+**Speaker 3:** I don't have anything in mind, but slightly delayed or something I'll think about. 
+**Speaker 1:** Any other visualization, do you have any... plus how can we show this client payment?
+**Speaker 3:** Can we make a funnel? Like a funnel starts at the top with those who pay first, then it gets smaller?
+**Speaker 1:** But that looks like a food chain, top of the pyramid. Inverted pyramid, right?
+**Speaker 4:** But it's not any stage or anything, it's like a classification. It's not like this one is early, that one is slightly more.
+**Speaker 1:** That's a good idea, but I am thinking how else you can present it tomorrow. Excellent PPT, I can make and show. And just scroll down where the header was. Change this header, the amount, the dollar, the CCY showing here. Make it expand, what is the full form of CCY? And one more thing, the amount should be in the same unit. If you are taking millions and kilos, don't give "CR" (Crores). CR is not a metric system. So whatever you are doing, put it on the same scale. Or show everything in 'K'. Has everything been integrated on the HTML file we made yesterday?
+**Speaker 3:** Yes, all the discussed right. Yes, yes. Also on the amount side, I think we will get this from the API right? So we do not need to do anything on the front end.
+**Speaker 1:** Yes, if they are sending it, they will send it.
+**Speaker 3:** Yes, so I was expecting that conversion and everything will be done on the API side. We will not make any calculations or any conversions on the front end, that is what we did in the revenue as well.
+**Speaker 1:** In revenue, everything is in millions and billions. But here, this exposure amount could be in thousands as well, like 15,750. So if we do not show the kilo thing, we will lose the absolute value. Understood right? Revenue is in billions, we don't worry about thousands, but here every dollar matters. So maybe you will get the absolute value. Look here it is 170K, the user might want to see what comes after 170K. In this case every dollar matters because this is actual cash flow, whereas revenue forecast is just a forecast. So keep track of the money, being dollars. Or maybe you can show it on hover how much is after 170K.
+**Speaker 1:** And how are you getting this data?
+**Speaker 3:** This is all mock data.
+**Speaker 1:** Have you shared the sample format with the other team member?
+**Speaker 3:** Not yet, we were just doing development yesterday. It is still pending but we will share this data today.
+**Speaker 1:** You know the trend, right? Whoever shares first, the second party has to follow. So if they share, you have to follow, and if you give the data, they have to follow. I can't be the arbitrator there. Any more visuals you can check about?
+**Speaker 4:** We can do a drill down. Like yearly presence, top 10 clients by open AR, and client risk category. Give some dummy visuals to the UI team.
+**Speaker 3:** Okay sir. 
+**Speaker 1:** What all has he made on top of this? This is repayment inflows and base closing. But this is of no use if we don't integrate AR. We have to highlight AR. And based on the bulk of amount and the Number of Days To Pay (DTP), we can create a client hierarchy. Because this high risk comes to the top, so we will know how much to collect from them. As an alert, if a collection manager comes to this page, they will get to know for today.
+**Speaker 4:** Are you talking about 'Days to Pay'?
+**Speaker 1:** Yes, that's why we are alerting. We will do that after this. Right now we are talking about UFS 1, how we can represent repayment overdues. You can create some dummy visuals and PPT. Go to the summary page, change the visuals. Change 1M to Month, 3M to Quarter. I think this is better because otherwise the text will become quite large. No, it's not about what we want, it's about what stakeholders said. 
+**Speaker 4:** You mentioned 60, 90? 30 days, 60 days, 90 days?
+**Speaker 1:** Yes, 30 days and 90 days goes to primary, but their AR aging data has buckets for 30, 60, 90, 180, 365, and above 365. 
+**Speaker 4:** If those are the buckets, what can it show here?
+**Speaker 1:** We can do it like this: within each of these buckets, what is outstanding within the next 30 days, and their tentative collection date. This is on the front of outstanding, but when we look at collection, that will primarily be 30 days and 90 days. Is there anything else in this?
+**Speaker 5:** Actually, there is a credit period. 
+**Speaker 1:** That will actually go into outstanding. This data you have is Outstanding. And what we are showing as inflows is Collections. We can make another graph below for Collections. Mainly a nature graph showing how much money is going to come in the next 30 days across currencies and entities. And beside that graph, we can create a card giving the drill down starting from entity until the invoice level. I am really not sure how to represent that yet, but once data comes we will start building. Who can take up the Collections visualization part?
+**Speaker 4:** I will make the data generation and give it.
+**Speaker 1:** Okay. Are you on track with the forecast?
+**Speaker 5:** I had given a KT session on Friday or Monday.
+**Speaker 1:** Okay, you drive this. How can we do this? Shall we go with the Databricks approach? Same as your revenue forecasting thing? Or do we want to do this on a VM? Revenue forecasting data was coming from Synapse. Here we have to feed the data. Do you think we can still do the same thing through Databricks? 
+**Speaker 5:** Costs will be saved here if we do it on a VM. During Database we had a lot of API issues. In Databricks we just had to make connections, but here we have to build the components, connectors, pull data, and manage the database. 
+**Speaker 6:** Where will the monthly AR data come from? 
+**Speaker 1:** Right now our primary source is the Collection Registry. The Collection Registry is historical data. Now we have to do the prediction on the AR data, which we can get from Synapse. 
+**Speaker 6:** But that pipeline will dump it somewhere, right? Like in Revenue Forecast, we used to fetch from Blob directly. 
+**Speaker 1:** We can do that setup. Synapse will dump the data into the Blob, our application will read the Blob and do the processing and training on our VM. That works. Just handle the Data Engineering part, identify the tables and sources. Ask them how they get this AR data, set up the pipeline to dump it into the Blob, and from the Blob the application picks predictions. 
+**Speaker 6:** Yes, yes. And how are you saving these model files at runtime? 
+**Speaker 1:** Right now we don't have anything solid in place, but based on the model version (like tier-wise), we can name the client model file and store it like a joblib file. Then load it at runtime. We will have to do clustering for the invoices. Try that on the VM. There's a demo this Friday, so once this is ready we have to show this dashboard. If a model is made and integrated via API with the dashboard, that will buy us some time for a week or so. What is the update on your single model? 
+**Speaker 7:** I am getting around 68% overall accuracy. This is Actual vs Predicted. But when I remove some outliers, my MAP (Mean Average Precision) score is going down. I haven't removed outliers yet; I just capped it at 350 days. Lower values I am taking mostly everything, from zero days to 360 days. I am getting around 78,000 data points for each client and invoices.
+**Speaker 1:** Can we do stacking of this model and the T4 model? Because the T1 model is giving 88% accuracy but T4 is giving 21%.
+**Speaker 7:** But what I have seen is even in T1, sometimes they have paid the invoice amount after 30 days or 90 days. 
+**Speaker 1:** We will discard partial payments. If we remove outliers, we will modify the future invoice behavior. So if an invoice comes up, it will predict within the boundary and won't predict out-of-scope behavior. What is the percentage of partial payments?
+**Speaker 4:** We don't know the partial payment amount. I need to pull that data and discuss it with the stakeholder today at 5:00 PM. I am trying to find out more cases as such, and this tier-wise client modeling might not also work for us. Some invoices of a client perform well, but some don't. 
+**Speaker 1:** Give me the percentage breakdown. How many outliers, how many removed, how many partial payments? What is the ratio? Are you doing a group-by on the invoice?
+**Speaker 7:** We can't do that. Because for one invoice we are getting multiple receipts. And in one receipt, multiple invoices are being paid (cross-invoice payment). So it's like a Many-to-Many relationship. 
+**Speaker 1:** Give me those numbers. If the data is less than 1%, then we can't use them for training, it becomes an imbalanced dataset. We would have to put another classifier which is over-engineering. We don't need to predict everything 100% accurately. Out of 100 times, 99 times I pay on time, 1% is a mistake. That will be a probabilistic accuracy. If it is a significant percentage, we put a binary classifier for partial/full payment. But if it is less than 1%, we can ignore it.
+**Speaker 7:** I think what is the target variable? Days to Pay?
+**Speaker 1:** Instead of Days to Pay, can we use a residual method? If the due date is 30 days, but the client pays in 28 days, it becomes -2. If another pays in 35 days, it becomes +5. This target makes sense to me.
+**Speaker 7:** We can try multiple models depending on the delay.
+**Speaker 1:** Try it by End of Day (EOD) and we can discuss the results tomorrow. Whenever you get time. The person working on the 4 tiered models will work on them. Another will work on the single model with 'Days to Pay' as target. The third will work on the single model with the residual target. How much time will it take? I am not asking for a perfect product, just show whatever your experimentation is.
+**Speaker 4:** I have built intermediate models. What I need right now is the outlier data and uncaptured behaviors to modify my four models. By Monday I can show something.
+**Speaker 1:** Okay, try to wrap up by this week. UI integration will also happen alongside. Thank you.
+
+***
+
+### **Overall Detailed Summary**
+
+**1. UI/UX Dashboard Development**
+The team discussed significant updates to the user interface for their financial dashboard. They agreed to implement an approved corporate color theme rather than reusing previous project themes, replacing a poorly suited red color scheme. The dashboard will categorize clients into "Early Payers," "Slight Delay," and "Heavy Delay," utilizing visualizations such as an inverted pyramid or a funnel chart. The team also noted that absolute cash flow values are critical; thus, currencies should be scaled clearly (e.g., in "K" for thousands) and exact dollar amounts should be accessible via hover effects, as opposed to rounding off to billions like they did in previous revenue forecasting projects.
+
+**2. Data Engineering & Architecture**
+To reduce operational costs, the team decided to host their data processing on a Virtual Machine (VM) rather than using a Databricks environment. They outlined a pipeline where monthly Accounts Receivable (AR) data will be extracted from Synapse and dumped into a Blob storage. The application running on the VM will read from the Blob to process and train the data. Additionally, model files will be saved at runtime as `.joblib` files, categorized by model versions and client tiers. 
+
+**3. Model Performance and Handling Outliers**
+The data science team reviewed their current single-model accuracy, which sits at around 68% for predicting payment dates. One developer noted that completely removing outliers (extreme late payments) caused their Mean Average Precision (MAP) score to drop. As a temporary solution, they are capping outliers at 350 days on a dataset of approximately 78,000 points. There was a debate regarding whether removing outliers would artificially constrain the model, preventing it from predicting out-of-scope future behaviors. 
+
+**4. The Challenge of Partial Payments**
+The team encountered a complex database relationship where a single invoice can have multiple payment receipts, and conversely, a single receipt might cover multiple invoices (cross-invoice payments). This Many-to-Many relationship makes simple "group by" SQL operations difficult. The lead suggested isolating the percentage of partial payments; if they account for less than 1% of the data, they should be ignored to avoid over-engineering the solution with a secondary binary classifier. 
+
+**5. Target Variables and Action Items**
+To improve the models, the team discussed shifting the target variable from pure "Days to Pay" to a "Residual Method." This calculates the difference between the payment date and the due date (e.g., paying 2 days early yields a -2 target). Action items were assigned: one member will refine a single model using "Days to Pay," another will build a single model using the "Residual" target, and a third will adjust four tier-based models once the outlier data is clarified. The backend developers will present their intermediate experiments the next day, while the UI team aims to integrate an initial API for a demo by Friday.
+
+
+Here is the full, in-depth English translated transcript of the conversation from the file "Wednesday, 4_54 pm.m4a.mp4", formatted speaker-by-speaker, along with the detailed overall summary. As requested, all personal names have been replaced with generic speaker labels to maintain anonymity. 
+
+### **Detailed English Transcript**
+
+**Speaker 1:** Actually, I have some issues related to the data. Like you see this receipt right, this one is 2552, its invoice amount is this much. 47 is paid, it has paid this much in rupees. Right.
+**Speaker 2:** Hmm. How do you know paid? Functional is the same as client... No, no, how do you are you sure that functional amount... functional currency is the same as the client payment currency? I don't think so. Functional currency is the currency in which the legal entity or the operating unit operates.
+**Speaker 1:** Hmm. Yes, so in that currency the client is paying, we don't know that.
+**Speaker 2:** We... exactly...
+**Speaker 1:** And if you check this a little, I am also actually not understanding this thing that, like it generated a receipt once on the 18th. It paid this much, right. In the functional amount, meaning it paid this much. Which had this much invoice, then again after 7 days...
+**Speaker 2:** Whatever the amount... ok. Like, let's go to the right, invoice amount, right?
+**Speaker 1:** Yes.
+**Speaker 2:** This plus-minus, what is the category they are belonging to? -386 +386... a little late...
+**Speaker 1:** Same, same, actually on the invoice...
+**Speaker 2:** What is the invoice?
+**Speaker 1:** Same invoice, same invoice.
+**Speaker 2:** Okay.
+**Speaker 1:** So that's what I am asking, why are they doing this again after paying once? Then they are doing plus and minus on that too.
+**Speaker 2:** Some adjustment must have happened. Okay? Might have paid extra. Then when are its receipts?
+**Speaker 1:** This is on the 18th, then after a week. Like it is the 18th, then after about 6 days... but both of these are on the same receipt method. Their receipt number is the same.
+**Speaker 2:** If they have the same currency, you can group by the invoice number. On the same invoice number, what will happen? The positive and negative values at the end, right? +38 something... They will get cancelled and your first value will stay the same as the invoice amount.
+**Speaker 1:** Okay, understood. Meaning I will have to include the currency in this too, but...
+**Speaker 2:** Yes, yes.
+**Speaker 1:** Which currency?
+**Speaker 2:** Actually they are in USD, go to the right, right...
+**Speaker 1:** Hmm, this is in USD actually, invoice currency.
+**Speaker 2:** 4750 Transaction Currency USD, Entered amount in USD, this functional amount in INR. Okay, its functional amount's legal entity must be Noida or something, look.
+**Speaker 1:** Its legal entity... operating unit... it is IQR Analytic Limited. Private Limited, yes, the operating unit is in India itself. Okay. So I am asking that when they said that transaction currency is in USD, meaning the money we received must be in USD, yes meaning...
+**Speaker 2:** Yes, yes, yes.
+**Speaker 1:** So then if we take the functional currency, then this will be messed up, right. Sorry, functional amount.
+**Speaker 2:** We cannot take the functional amount.
+**Speaker 1:** Yes, I was saying functional amount everywhere.
+**Speaker 2:** No, look, your main amount is the invoice amount. Okay? Because when our test set comes, right, the invoice amount will be in it. Correct.
+**Speaker 1:** Correct.
+**Speaker 2:** The functionally entered will not come in it. So whatever amount you are using, use the invoice amount only. But yes, for data wrangling, you can use this. Meaning which one is a partial payment, etc., you can do all this. Okay?
+**Speaker 1:** So between the entered amount and the functional amount, we are mostly taking the entered amount only, right, because if we take functional, it will be messed up.
+**Speaker 2:** Hmm, hmm.
+**Speaker 1:** There is this one from Google.
+**Speaker 2:** This is Google LLC. Okay. No, it's not Google. It's the other one. So you check this, the investment was this much. It did like this first, then like this. Then at the end, when I am summing all these up, it is coming to 10,000 only. Meaning the one at the bottom. So meaning... Okay, this receipt, right, in this receipt number, how much is its invoice? Take this receipt number and search the receipt number here; there could be multiple receipts. Okay? This is multiple receipts already.
+**Speaker 1:** Yes. If you take this receipt, what these people do is cross-invoice payment too. When the meeting starts...
+**Speaker 2:** Okay, okay, right. I will check. Then fine. After this we...
+**Speaker 1:** Yes.
+**Speaker 2:** Okay, okay, right. Thanks. Thank you.
+**Speaker 1:** Thank you. Bye.
+
+*(A broader team meeting begins)*
+
+**Speaker 3:** Hi Speaker 4, hi Speaker 4 right? So what I did was that I took some, had some client IMU SEO mapping, but I found that one client can have multiple IMUs and SEOs, right? So where to get the data from at an invoice level for that invoice which belongs to a particular client, what is the corresponding IMA and SEO for that? So any data source you can guide us with?
+**Speaker 4:** In the invoice, there will be a project, right? In the AR report. And in that project report, you can find out which IMA it is. So mapping has to be done at an invoice level.
+**Speaker 3:** Okay, you are saying at a project level.
+**Speaker 4:** At a project level.
+**Speaker 3:** And in the collection working register which we have, it doesn't have... I am sharing history... it doesn't have a project code attached as a part of the columns, list of columns. So Speaker 5, can we get that info along with the invoice number, what is the project code for this? We need to manually identify and I mean pull from different multiple sheets then. Uh, if also you can get me that, you know, different sheet where we proceed before that...
+**Speaker 5:** So basically, I mean, that needs to be looked at at an invoice register on a monthly invoice register and then I mean it needs to be clubbed and then the monthly invoice register there has the invoice number and your project code detail. Because these are the collected invoices. So collected invoices, it will not come in the aging report. So that is already collected. So if it is collected, then only we can find it from the invoice register only. The project codes and all that. So that project code is also something I mean on a monthly basis we have to mean pull it for each and every month and then we need to consolidate and then we could mean have to check for the project register.
+**Speaker 3:** Okay. Uh, if possible, can I get the access to those monthly data? I can do it myself. Uh, once I get the monthly data. Because I think it's kind of critical for you know improving the accuracy of the model.
+**Speaker 5:** We can share that invoice register.
+**Speaker 3:** Okay, okay. And there are a few cases, team, like the receipt date is the same as the invoice date. So should we assume them as auto-debit or what is the significance there?
+**Speaker 5:** Can you show one or two samples?
+**Speaker 3:** Yeah, showing something similar like this. There is a significant percentage similarly. So here the invoice date is 27 January 25, the receipt is also on the same date, likewise another one. These are just two of the few examples but this is a valid scenario which we have encountered.
+**Speaker 5:** That is a timesheet-based invoice only, the PMC and managed service. So that could be a past date. That, on the basis of the timesheet, the invoice got generated later on and it gets applied.
+**Speaker 3:** Okay. Is there any info regarding auto-debit like as a mode of payment or auto-debit some don't have...
+**Speaker 5:** Don't.
+**Speaker 3:** Okay. What we were thinking if the client is entirely auto-debit, like for a particular project code or something it's entirely based on the auto-debit process, so there is no need to include that in the model right? Because definitely it's going to come back, the collection is going to come on the same as the invoice date, so we were thinking that. But let me do some more research like what is the percentage that the number of payments, they are done on the same as the invoice. Let me find that out. And Speaker 5, last meeting we had a discussion on the currency using which the client makes the payment, right? The functional currency is not the one because it's the currency that the entity operates... this might be a you know question that I have brought up again, but is it the same as the entered currency? The currency that is used for banking transactions? Or is it not the correct assumption?
+**Speaker 5:** The entered currency, if it is correct, is the banking currency only, but invoice currency could be a different one.
+**Speaker 3:** Correct, right. So...
+**Speaker 5:** Yeah...
+**Speaker 3:** Yeah, so...
+**Speaker 5:** The entered currency could be a bank currency, whichever bank currency it is. Either it is GBP, USD or Euro. But the invoice currency could be different. I mean, it could be similar to the bank currency already, I mean simple to the bank currency, or it could be a different currency.
+**Speaker 3:** Okay, right. We have observed this pattern only, but can we say that the currency in which the client pays the invoice is the entered currency?
+**Speaker 5:** Currency which pay... no, so it depends upon the bank currency right? So whichever bank's, let's say any ZAR currency has been paid in the XL for example. So we don't have a ZAR bank account in XL. So we take the ZAR currency in your USD account. So in that case, the entered currency would be USD and the invoice currency would be ZAR. So there would be a difference of currency, right?
+**Speaker 3:** Correct, right.
+**Speaker 5:** So that's how it's meant to look.
+**Speaker 3:** Actually, I wanted to know on what is the currency that the client uses for payment. Uh, so more or less you are saying it's the entered currency or the bank currency, right?
+**Speaker 5:** I mean, for a client to use currency, that depends upon their I mean their convenience. Like we always mention our bank, bank currency, bank account details in the invoice copy. So we always mention that this, this is the bank account that where you need to remit the payment with the bank, I mean bank account. And whatever the invoice currency detail or the bank currency detail, we already communicate to the client that this is the USD bank account or this is the GBP bank account. So that, that details are already there with the client itself. Now if a client wants to pay like GBP amount converted into USD in our bank, then, then that's an agreement that needs to be, I mean, I mean confirmed with the business. If it is, I mean, convenient to pay on that bank account or not. But I mean whatever details that we required from the client, we always communicate to the client.
+**Speaker 3:** Okay, alright. So this report we don't have, but in which currency client has paid, that information is not there in this...
+**Speaker 5:** No, no. That information would... yeah, that information would not be there. The only thing is the bank currency would be... that bank currency would be our bank currency only.
+**Speaker 3:** Is it possible to collect the info about the client-side details, like in what currency they have paid just like...
+**Speaker 5:** Difficult one. Because not all statement currency details are there. Because then we have to scan each and every statement where the bank, I mean whichever the currency details are mentioning in the statement. And in some of the cases, the currency details are not mentioned in the statement. It gets, I mean, only the uh conversion amount is there.
+**Speaker 6:** For the purpose of modeling, what you can, you know, base it on is the invoiced currency. So any invoice which is being collected, we can assume that that is being collected in the same currency as it is billed. Right? So from a model, model standpoint, we need modeling based on, like forecasting based on the invoice currency amount.
+**Speaker 3:** Okay. Uh, Speaker 6, why I am bringing this up is, uh, you remember last meeting we discussed excluding the partial payment. It's like a few cases but still, we need to spot those partial payments. So that's where we need to make sure that these two, you know, the amount received and the amount which it was invoiced for, they need to have a relation so that we can say that it's a partial payment or something, correct. So that's why I wanted to know that the currency in which the client is paying and the currency in which we are invoicing, if we get to know that we can infer that this is a partial payment or a complete or an overpayment.
+**Speaker 6:** By and large, there would be not, there won't be any difference in the invoice entered currency versus client paying currency. For very, very limited cases that I think, I mean we will still have to talk about the partial payments, how that has to be set off. Because what you were reading as a partial payment was essentially a full payment which was received in a different currency. But there could be instances where there would be a mismatch in the amount received or partial amount might be received. So only those cases maybe would have to identify. For the rest of the model thing, maybe you can use the invoice entered currency as the base currency in which you will run the model.
+**Speaker 3:** So Speaker 6, what I can do, I was supposed to do this today itself, but I need a few, some time. I will gather all those, you know, into partial payment or overpayment or whatever cases are out there in the collection register, and can we have a discussion like do this and those cases whether we should include them in the model or how to handle them, can we do that?
+**Speaker 3:** Okay, okay. And Speaker 4, for the historical AR data, you know the unbilled to billed, if you are free, can we connect today or whenever you are available you can let us know, we could connect on one day.
+**Speaker 4:** Yeah, just ping me around 6:30, we can connect.
+**Speaker 3:** Okay. I think those were a few things I wanted to discuss unless the team has anything. Speaker 1, Speaker 7, anything?
+**Speaker 7:** The data source like which Speaker 5 uses, so if we can get that it will be helpful to build the pipeline around Speaker 5 data source... in the sense like...
+**Speaker 5:** Data source in the like where do you push those Excel files from?
+**Speaker 6:** So the report path is what you are talking about, the Fusion report path?
+**Speaker 7:** Fusion, yes, maybe yes. So maybe you know, whichever reports you would want us to point out the source, just send us a list and we can very quickly plot the source against those. So we'll give you the link and path you can check. If you don't have access, then those would have to be arranged.
+**Speaker 7:** Alright, alright. That works.
+**Speaker 6:** Yeah. Okay, Speaker 7, you have the clarity about the environment in which the data, or we will get that after...
+**Speaker 7:** Will get that after seeing the links.
+**Speaker 6:** Speaker 1, any queries you have or we could...
+**Speaker 1:** Yeah, nothing.
+**Speaker 3:** So Speaker 6, Speaker 4, and Speaker 5, uh, this is all we had for today. And I will schedule a call with Speaker 4 today for pulling the unbilled to PR billed AR data. And for the partial payments, I have to come up with a list of all those scenarios so that we can discuss further. But the report format or how the input will come about, has that been discussed with Speaker 4?
+**Speaker 4:** No, that has been... we initiated the discussion on Monday, we have... so shall we discuss today Speaker 4, if you have some time then first share that all this format so that I, I will just go through and I am ready with some questions.
+**Speaker 3:** Uh, sorry I couldn't get...
+**Speaker 4:** There are formats and formats are ready in which you have developed that model.
+**Speaker 3:** Uh, like the result format you are saying which comes out of the model?
+**Speaker 4:** Yeah, I can share a rough format as of now. Yes, I can share. By 6:30 when you call me for unbilled data through your dashboard, then in that discussion I will go through that.
+**Speaker 3:** Okay, works.
+**Speaker 4:** And meanwhile I will arrange the AR register where you can map the invoice with projects.
+**Speaker 3:** Right, right. That would be helpful. I think we are good for now. Speaker 6, we can drop off and we meet. Thanks, thanks.
+
+*(The meeting ends and the original developers resume debugging)*
+
+**Speaker 1:** Actually, let me take that discussion a little further. Like what I have done, in this the partial ratio is, actually this much invoice has had partial payment. Okay, out of the total invoice. Right? It is around 7%.
+**Speaker 2:** Okay. How can you say that partial payment? Currency match?
+**Speaker 1:** Actually, I don't have the invoice currency. So I am mostly using these two currencies only. Based on this report. In this one we don't have invoice currency... What are you saying?
+**Speaker 2:** Where is the invoice currency in this one? In Global AR.
+**Speaker 1:** Transaction currency is the invoice currency, right? Yes. Meaning I am using this only. Actually, I am using this only. But there is no such column in it which says that this is the invoice currency. So I am assuming this as the invoice currency. Right? Okay, hmm, so as you said that partial payment is happening, I have here, but partial payment, like let's say I remove this and suppose I search for this receipt. Right? This whole thing is coming here like this. Unapply, applied all are coming in this. Right?
+**Speaker 2:** Remove unapply. Unapplied, on account, refund, you remove these three categories from this data itself.
+**Speaker 1:** But okay, fine. Okay. So this one is here. In this, our receipt is this one. 04867 so this one is it. Right? In this you will see, it happened once. Then this happened once. Then this happened once. All three times, meaning the same...
+**Speaker 2:** This invoice, which was our original invoice 4867, what is its invoice amount? It is written behind 157 right...
+**Speaker 1:** Here it became -17.
+**Speaker 2:** There are three invoices there. Okay, yes. Okay, do one thing, this invoice amount that is coming, go to the right. Go to the right. The invoice amount's 1500 each invoice's, each unique invoice's. Right, you understand?
+**Speaker 1:** Hmm.
+**Speaker 2:** Calculate the sum of its invoice amount under this receipt.
+**Speaker 1:** It has one, two...
+**Speaker 2:** Go to the right, go to the right, go to the right. Hmm. Grab 15, 17, grab one. Right, grab one, yes, yes. Then do control and yes, the one after that, the one after that. How much sum is coming? 138 193. Go to the left. Give the full sum of column M.
+**Speaker 1:** It is coming around 123.
+**Speaker 2:** 123 and 15000 is missing. Yes.
+**Speaker 1:** Right, whose is this? What was its invoice date? Its invoice number is this 04867.
+**Speaker 2:** Okay, write this down.
+**Speaker 1:** Hmm.
+**Speaker 2:** Right. So... listen, make a file, in this file note down such special cases, what is...
+**Speaker 1:** I had made this file for this reason only actually, this whole meaning I have made it completely. In this meaning for partial payment records also I have seen things here. So from that, I picked this one record from there. From this, I picked this one record from here. Actually, I just picked the first one.
+**Speaker 2:** Fine. You look. Okay.
+**Speaker 1:** If you need this record then I...
+**Speaker 2:** What is the occurrence of this invoice? Filter it out for this invoice. 4867.
+**Speaker 1:** Its, I think it will be three only. 4867, no 67 sorry.
+**Speaker 2:** In the right. There are two amounts, right? The invoice amount is the same, take the sum of the K column, sorry K column.
+**Speaker 1:** It won't come, it will come to 10,000 only.
+**Speaker 2:** Not 10,000.
+**Speaker 1:** Hmm, meaning looking at it this way, then they haven't paid the entire amount, the client hasn't paid it fully like this. Hmm.
+**Speaker 2:** Okay, okay, you took it in the collection, right? You took it from the collection itself. Fine, note this down, open a notepad or a document, write these special cases in it, right? That for this invoice it is coming like this-this.
+**Speaker 1:** Okay, fine.
+**Speaker 2:** Right.
+**Speaker 1:** Hmm. I wanted to know one more thing, like you had said...
+**Speaker 2:** Hmm.
+**Speaker 1:** That like for one invoice let's say I have done this. Now this invoice like partial payment is happening. Now what they did was that instead of one receipt... meaning here they had to give $100, they gave $90. Finished it with this receipt. Now the one that... Now that is going to another invoice. And the $10 that is left, it will go from another receipt. Will that meaning go from another invoice number?
+**Speaker 2:** Yes, that can also happen. Look, single invoice multiple receipts, this is a valid scenario. Multiple invoices single receipt, this is also a valid scenario. Right? Valid scenario meaning these scenarios exist. How we handle that, that is a different case, you understand?
+**Speaker 1:** Just like this we directly compared the value and... Speaker 4 and Speaker 6 said, right, that the entered one... what the bank gives is exactly according to the client agreement. Right? It is given to the client that from this bank you will do it with this currency, so the client sees only that much, right?
+**Speaker 2:** Generally transaction currency and entered currency okay, they should match. But whichever are not matching, those cases are also special cases, we have to ask. This is there, one minute, sell payment, this one. So the invoice point was this much, functional amount meaning for this one like it was 470, so in paid he gave this much, still this is not matching. Okay, here same invoice amount was this much, he paid this much fully in entered so this is correct.
+**Speaker 1:** So I have made this entire summary by the way, somewhere it is mismatching. Right? By the way, for this one also it is mismatching. So there are quite a few instances where there are mismatches.
+**Speaker 2:** Okay.
+**Speaker 1:** Out of those, we were checking this one right now. This 4750 one...
+**Speaker 2:** Next to the invoice amount, put that transaction currency. Next to the functional entered's functional, bring its respective currency and put it. It will be easier for analysis.
+**Speaker 1:** One minute, one minute, what did you say? Wait one second.
+**Speaker 2:** Next to the invoice, take the transaction and put it. Okay?
+**Speaker 1:** Hmm.
+**Speaker 2:** Then next to the functional, next to the functional entered, entered. This is done, so now what did he do, this is the invoice amount, right, this was it, but he paid INR, this is correct actually. Right? Hmm.
+**Speaker 1:** But somewhere the things which meaning these are not equal. So I will just do all these instances once. Why because the invoices are meaning I have done it based on the receipt only. Actually how many times the receipt has come. Group by has been done with that only. But like I just told you a case, right, that it is $100, $90 is given from one invoice. But the $10 that is left, is given from another invoice and its receipt is also different. Then it won't be able to catch it. Then here where mismatches are happening, like this $25 one is a mismatch, now where was this adjusted, this meaning how will we know? Because the client, they will pay the full amount, right? Without paying, it will just keep showing as outstanding like this.
+**Speaker 2:** I told you, right, this multi-invoice and multi-receipt, because of this all this is happening. How to do this, I am not able to figure out.
+**Speaker 1:** So group by meaning, I will then take the receipt too. Meaning one invoice will have one receipt. The receipt's and one more invoice with it will have this. That invoice must have taken this invoice's amount and put it.
+**Speaker 2:** Ah, okay.
+**Speaker 1:** And if, and if they have entered somewhere of some other project also in it, meaning like with $10, if they have added $50 of some other project also inside it, then how will we do that? Like that $10 which was left, will those people tell this thing that we have adjusted...
+**Speaker 2:** Don't know, all this will have to be discussed. Take out the data. Okay? Write all the scenarios in a Word document or one, one row that is there right now. Next to this row, put a comment about what the issue is. Right.
+**Speaker 1:** I will do it. Right.
+**Speaker 2:** Okay.
+**Speaker 1:** I will tell you if anything is needed.
+**Speaker 2:** Okay.
+**Speaker 1:** Okay. Thanks.
+**Speaker 2:** Thank you.
+
+***
+
+### **Overall Detailed Summary**
+
+**1. Pre-Meeting Debugging & Data Discrepancies**
+The recording begins with two team members analyzing data inconsistencies, particularly focusing on functional versus entered (transaction) currencies. They are confused by receipts showing multiple transactions (additions and subtractions) on the same day for the exact same invoice, which they deduce might be internal adjustments or partial payments. They realize they must strictly use the "invoice amount" and "entered currency" for their base model rather than functional amounts, as functional currency conversions (e.g., to INR) distort the actual transaction values. They also uncover edge cases where clients use cross-invoice payments on a single receipt, making data grouping significantly more difficult.
+
+**2. Broader Team Meeting: Project Mapping and Same-Day Payments**
+The recording then transitions into a larger team meeting where a developer asks stakeholders how to properly map specific invoices to Project Codes (IMA/SEO). A stakeholder explains that this mapping cannot be done via the standard aging report and must be manually extracted from the monthly invoice register instead. The team also inquires about invoices that are paid on the exact same day they are generated, wondering if these are auto-debits that should be excluded from the predictive model. The stakeholders clarify these are likely timesheet-based invoices (PMC and managed services) that are generated retroactively, and are not necessarily auto-debits.
+
+**3. Currency Handling and Partial Payments**
+A major topic during the broader meeting is determining which currency to use for predictive modeling. Stakeholders explain that clients pay into specific bank accounts (USD, GBP, Euro) based on convenience, which becomes the "entered currency," but this might differ from the actual "invoice currency." The lead stakeholder directs the team to base their modeling strictly on the *invoiced currency* to ensure consistency across the board. They conclude that many perceived "partial payments" are actually full payments that only *appear* partial due to currency conversion mismatches. The team agrees to gather all genuine partial payment scenarios for a follow-up review before attempting to build them into the logic.
+
+**4. Post-Meeting Debugging & Next Steps**
+After the large meeting concludes, the original two developers resume their one-on-one screen-sharing session. They estimate that genuine partial payments make up roughly 7% of their current dataset. They continue to struggle with complex payment behaviors, such as one receipt paying off multiple invoices ("one-to-many") or multiple receipts paying off a single invoice ("many-to-one"), finding instances where $15,000 seems entirely missing from an expected sum. Because these many-to-many relationships break standard SQL "group by" logic, the developers agree to compile all these edge-case scenarios into a separate Word document with specific comments for further discussion with the stakeholders.
