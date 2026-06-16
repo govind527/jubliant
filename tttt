@@ -1,10 +1,1 @@
-notee
-the team lead instructed the data scientists to prepare a structured presentation (PPT) or document in preparation for an upcoming  demo. 
-
-The discussion outlined several specific, in-depth requirements for what the presentation must contain:
-
-*   **Hypothesis and Final Approach:** The document must clearly articulate the core hypothesis and the final modeling approach the team has decided to follow.
-*   **Recommendations:** It should include clear recommendations, similar to an "ABC approach" the team previously utilized in a different revenue forecasting project.
-*   **Technical Evidence and Drivers:** The team was explicitly told not to just provide a generic "AI summary." Instead, they must include hard technical details, such as **feature evidence, model equations, and feature drivers**, which can be extracted directly from the model's coefficients.
-*   **The 45-Day Filter Results:** The presentation needs to "nicely package" the outputs of a specific test the lead requested earlier in the meeting: applying a hard 45-day filter to evaluate the model's accuracy on invoices due in less than 45 days versus those taking longer.
-*   **Data Scientist Persona and Justification:** The overall tone and structure of the document must reflect how a data scientist systematically approaches a problem. The lead emphasized that the presentation must demonstrate that the team has thoroughly **evaluated multiple options** and must clearly justify *why* they chose their specific approach over others, rather than just stating what work was completed.
+noeee
