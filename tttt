@@ -1,1 +1,135 @@
 noeee
+
+### **Overall Detailed Summary **
+This meeting was an evening technical synchronization between a frontend/UI developer and a backend API developer. Their main goal was to align on how data will be passed from the backend API to the frontend dashboard visuals for the cash collection forecasting project.
+
+**Dashboard Visuals & Data Display:**
+The team reviewed the dashboard interface, which displays both "Actual" (historical collection data from previous months) and "Predicted" (future forecasted collection data) figures. They clarified that by default, the system will look back at the past six months (e.g., December to May) for actuals, and project up to 12 months forward for predictions. 
+
+**Dynamic Granularity & API Structure:**
+A major discussion point was how the API handles dynamic date filtering. The frontend developer demonstrated that the dashboard allows users to select different time granularities—such as daily, weekly, monthly, quarterly, and yearly—or set custom "From" and "To" dates. 
+*   **Preset Filters:** If a user selects preset filters (e.g., 1 month, 3 months, 6 months), the API is expected to return bucketed data specifically matching that timeframe.
+*   **Custom Dates:** If a user selects custom dates, the frontend will pass the exact start and end dates to the API. The backend must then calculate the difference and return the data in the requested granularity. 
+
+**Specific Dashboard Components:**
+They reviewed several specific charts on the dashboard:
+*   **Expected Collection Timing:** Displays anticipated collection schedules, though the "daily" view was currently throwing an error due to missing data.
+*   **Client Payment Behavior:** Designed to show client-wise collections over a selected period, illustrating the exact amount and percentage of revenue at risk if a client delays payment.
+*   **Collection Variance & Cash Position:** The developer noted that "outflow" data is completely missing, so that metric must be removed from the view. 
+
+**Action Items:**
+The frontend developer requested that the backend developer finalize and share the modified mock JSON data/API response format that evening. This would allow the frontend developer to build and test the UI integrations overnight. They agreed to meet at 11:30 AM the next day to perform joint testing before their larger team call.
+
+---
+
+### **Full In-Depth English Transcript (Anonymized)**
+
+**Speaker 1:** Let's go. Audible now?
+**Speaker 2:** Yes, okay. So let me share the screen. Right now, we have done something like this here.
+**Speaker 1:** One minute, now...
+**Speaker 2:** This is it.
+**Speaker 1:** Hmm, it is visible now.
+**Speaker 2:** Look here, this is 'actual' and this is the 'predicted' one. 'Actual' means what we have collected in the previous months. Right?
+**Speaker 1:** Hmm.
+**Speaker 2:** Right? If I select 'one month' here and select 'daily' here, and submit, then this breaks. Ah, the daily phase is failing. So what will happen is, look, this is the separator... let's write 'actual' in all... no, the 'predicted' one. Ah, there is nothing in the 'predicted' one. Okay, so what will happen... let's fix that. What will happen? Suppose I set 12 months here. Right? And I set it to monthly. So what will this do? Basically, the collections from the previous months...
+**Speaker 2:** ...their list. So basically we are targeting to show the last six months. Okay?
+**Speaker 1:** If it's monthly. If it's the daily one, you will send me the last six days present, right?
+**Speaker 2:** Tell me one more thing, which month are we in right now?
+**Speaker 1:** We will always be in the current month, right.
+**Speaker 2:** So the current month is June right now. Right?
+**Speaker 1:** So the last six months from June means from December to January... actually, it should be from December to May.
+**Speaker 2:** Yes, whatever is there from December to May, you will send me in this 'actual' one.
+**Speaker 1:** And in this 'predicted' one, you will send the prediction for the next 12 months, right?
+**Speaker 2:** Hmm.
+**Speaker 1:** Understood?
+**Speaker 2:** Okay, 12 months, right? Prediction for the next 12 months.
+**Speaker 1:** Whatever is at the top, if it's 12 months at the top, it will be 12 months. And if there is a filter here, like if I selected 'From' and 'To' date...
+**Speaker 1:** ...and I sent you the 'From' and 'To' date, you will do it accordingly.
+**Speaker 2:** Meaning it will come date-wise then, right?
+**Speaker 1:** Yes, then you will get it date-wise. You will...
+**Speaker 2:** In date-wise, does that mean I will give the last six dates, and then what will I do? Like one-one month...
+**Speaker 1:** In the 'actual' case?
+**Speaker 2:** Yes.
+**Speaker 1:** No, the 'actual' one... basically what is this deciding? Like here it was doing one month, three months, six months... here we selected a custom date. Here we can also select 12 months or 24 months.
+**Speaker 2:** Whether to give the last 6 days, 6 weeks, or 6 months is decided by this view. You will share the details with me based on what is selected here.
+**Speaker 1:** Okay.
+**Speaker 2:** Right?
+**Speaker 1:** Understood?
+**Speaker 2:** And all those formats are here. Whatever is selected here, if it is daily, then you will see it is happening daily. Okay. Is there some data like this that you...
+**Speaker 1:** Yes, I will send it to you. Yes, I will send it. Right now, like this expected collection timing...
+**Speaker 2:** In one to two weeks, these are all the details. I think you had done this before too. But now I have also put the daily one in it. I also put monthly and quarterly. This is dynamic now. Right?
+**Speaker 1:** In the case of monthly, then it comes... quarterly is breaking for me.
+**Speaker 2:** Because the date might not be there, I guess.
+**Speaker 1:** The date... I had prepared dummy data, it should have been there. Okay, I will fix it. Now look, I have prepared this response.
+**Speaker 2:** Meaning all the data will come in this response, right?
+**Speaker 1:** Yes, it should come in this format.
+**Speaker 2:** Understood.
+**Speaker 1:** So basically, whatever you send me, the things I have to do... I will have to make changes in the exact same API, the daily forecast, sorry out-out forecast, cash flow forecast API, right?
+**Speaker 2:** Yes.
+**Speaker 1:** Okay, okay, fine.
+**Speaker 1:** Should I send this to you?
+**Speaker 2:** Yes, send this to me. And please explain the bottom graph to me once, what are you doing there? In the bottom one, select monthly instead of quarterly. Yes, come down, further down. Yes, tell me about this one here, it will be written like this...
+**Speaker 1:** What we are basically doing here is showing client-wise how much collection we will get from this particular client...
+**Speaker 1:** ...meaning for the selected month.
+**Speaker 2:** Whatever is selected here, if it is three months, we will show the three-month detail here, how much is going to come from this in three months.
+**Speaker 1:** Oh, okay.
+**Speaker 2:** How much amount will come and what percentage will come.
+**Speaker 2:** So basically, this defines that if it is not paid on this time, we will lose this much collection.
+**Speaker 2:** That's why we added this.
+**Speaker 1:** Understood.
+**Speaker 2:** Right.
+**Speaker 1:** Hmm, and this currency exposure too?
+**Speaker 2:** This is basically the top filter, right?
+**Speaker 2:** Whatever it is, like one month, three months, six months, 12 months...
+**Speaker 2:** All this data should come based on this.
+**Speaker 1:** Oh, okay.
+**Speaker 2:** Right.
+**Speaker 1:** Understood.
+**Speaker 2:** You understood, right?
+**Speaker 1:** Yes, I understood. So the granularity is decided in that format you are providing. Earlier, in the forecasting one, it was month-wise: one month's data granularity. Like the FP&A data, then model prediction data, then actual, we had created granularities like that. So in your data too, such granularity is built. The format you give me, like if I select six months, it should come like this in six months; if I select 3 months, it should come like this in 3 months. Right? Oh.
+**Speaker 2:** Six months one... Yes, in the six months case, what you will do...
+**Speaker 1:** Hmm.
+**Speaker 2:** If it's six months... what is this opening balance inflow? Okay, this is like your cash position now.
+**Speaker 2:** So in the six months case, you will give me six months, like June, July, August, September, October, November.
+**Speaker 2:** You will give whatever those six months are like that.
+**Speaker 1:** I will also give you its actuals for the last six months, along with the forecast, the month.
+**Speaker 2:** You will give that too?
+**Speaker 1:** Yes.
+**Speaker 2:** Yes.
+**Speaker 1:** So that's what I am asking, your... meaning...
+**Speaker 2:** Have you made it in that format or not? Because this will be for your six months, then 3 months, then same goes for 12 months, then 2 years. It should follow that granularity, right?
+**Speaker 1:** 10, 11, 12...
+**Speaker 1:** And this granularity, this granularity is being followed on every graph, right? So your graph should come month-wise... meaning the granularity will be like that unless we pick some custom date.
+**Speaker 2:** Oh, I didn't understand. Tell me again.
+**Speaker 1:** Like in six months, one month, three months, you are picking the data, right? From here, yes, 12 months, you are picking the data from here because you have already created the date in that format, right? So every data is getting filled in its individual chart, in its respective chart, right? Yes. Correct.
+**Speaker 2:** How will it work in the custom one? This is what I am asking. Like in the custom one, I selected two dates. Right?
+**Speaker 1:** Hmm.
+**Speaker 2:** So in that case, you will basically check on the back-end...
+**Speaker 2:** ...how many months or how many years it is. Based on that...
+**Speaker 1:** Right now one month is selected. So are you doing this calculation on the front-end?
+**Speaker 2:** No. I will send you the two dates. You will check on the back-end how many days it is. You will calculate the difference from the 'From' and 'To' dates. You will send it to me based on that.
+**Speaker 1:** Ah, I understood that...
+**Speaker 2:** So basically, what will happen? I will get the same format. Here...
+**Speaker 2:** If I put quarterly, yearly, monthly, weekly after this date, I will get the same date format.
+**Speaker 1:** Hmm.
+**Speaker 2:** Right.
+**Speaker 1:** Hmm.
+**Speaker 2:** You will basically calculate the difference between these two and then fix the data for me accordingly.
+**Speaker 1:** For custom, right?
+**Speaker 2:** Yes.
+**Speaker 1:** Understood, understood.
+**Speaker 2:** Right. I understood. I will also have to test whatever I build. So I will build these things tonight and test them. Will you be free tomorrow at 11, 12, 11:30? Will you come... meaning before the call?
+**Speaker 1:** 11:30 is fine, I will come.
+**Speaker 2:** Yes, so we will both test it once.
+**Speaker 1:** Done, done.
+**Speaker 2:** Right?
+**Speaker 2:** I am thinking this is my cash position, this is my collection variance. Collection variance, in collection this is my actual, forecasted this actual this. We don't have an outflow, so we will have to remove outflow. Let's see what is on collection timing. Actual received 3.14 million. Client payment behavior, cash position, collection variance, collection timing... is all the data not there?
+**Speaker 1:** Give me a little more time. If you want, keep making your changes. I will modify the data a bit more and then send it to you.
+**Speaker 2:** Yes, modify the data and send it to me. Okay? Send it today itself so I can do the things at night. Right?
+**Speaker 1:** Done, done. I understood the logic basically.
+**Speaker 2:** I understood the logic. I understood things. Okay? Now I just have to build the API in that format. Okay? So that your response also comes correctly and things remain in sync. Right?
+**Speaker 1:** Correct. Correct.
+**Speaker 2:** Take your time. No problem. Send it to me. Send it today itself.
+**Speaker 1:** Okay. Okay.
+**Speaker 2:** Thank you.
+**Speaker 1:** Thank you, brother. Yes. Bye.
